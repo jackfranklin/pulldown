@@ -17,7 +17,7 @@ reset = '\033[0m';
 
 
 var nodefetch = {
-  VERSION: "0.0.2",
+  VERSION: "0.0.3",
   packages: {},
   gotPackages: false,
   userHome: function() {
