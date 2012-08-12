@@ -71,7 +71,7 @@ var nodefetch = {
   processPackageArg: function(arg) {
     var spl = arg.split(":");
     var fileUrl = this.packages[spl[0]];
-    console.log("-> Attempting to download package", arg, "from", fileUrl);
+    console.log("-> Attempting to download package", spl[0], "from", fileUrl);
     if(!fileUrl) {
       console.log("-> " + red + "ERROR: Package " + spl[0] + " not found", reset);
       process.exit(1);
