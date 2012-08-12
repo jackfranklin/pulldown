@@ -58,6 +58,7 @@ This is my first NPM module so I'm still learning, but the most pressing TODOs a
 * Move `nodefetch.json` into the package for nodefetch so I can simply update the default one through Github.
 * Unit Tests?
 * Improve error handling
+* Rewrite to use [ShellJS](https://github.com/arturadib/shelljs/).
 
 
 ## Changelog
