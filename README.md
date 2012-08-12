@@ -8,9 +8,10 @@ You need to have Node JS and NPM installed.
 
 nodefetch also depends on the command line utility wget. If you're on a Mac and use homebrew, you can install with `brew install wget`.
 
+At this time nodefetch has only been tested on Mac OS X Lion. If you run any other OS, please let me know if nodefetch works or not.
+
 ## Installation
 
-_Please note this is currently *not* on NPM at this time. It will be soon!_
 
 ```
 npm install -g nodefetch

@@ -5,5 +5,9 @@
     "preferGlobal": "true",
     "bin": { "nodefetch": "nodefetch.js" },
     "author": "Jack Franklin",
-    "engines": { "node": "*" }
+    "engines": { "node": "*" },
+    "repository": {
+      "type" : "git",
+      "url" : "git@github.com:jackfranklin/nodefetch.git"
+    }
 }
