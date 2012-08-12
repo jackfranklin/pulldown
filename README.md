@@ -17,6 +17,12 @@ At this time nodefetch has only been tested on Mac OS X Lion. If you run any oth
 npm install -g nodefetch
 ```
 
+(If you get a permission error, you will need to try again as `sudo`):
+
+```
+sudo npm install -g nodefetch
+```
+
 You will then have the `nodefetch` executable ready for use.
 
 ## Usage
