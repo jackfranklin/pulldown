@@ -1,0 +1,9 @@
+{
+    "name": "nodefetch",
+    "version": "0.0.1",
+    "description": "Fetch popular web libraries from the net",
+    "preferGlobal": "true",
+    "bin": { "nodefetch": "nodefetch.js" },
+    "author": "Jack Franklin",
+    "engines": { "node": "*" }
+}
