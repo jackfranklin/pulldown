@@ -59,6 +59,7 @@ This is my first NPM module so I'm still learning, but the most pressing TODOs a
 * Unit Tests?
 * Improve error handling
 * Rewrite to use [ShellJS](https://github.com/arturadib/shelljs/).
+* Rewrite to use [CommanderJS](https://github.com/visionmedia/commander.js) for better CLI.
 
 
 ## Changelog
