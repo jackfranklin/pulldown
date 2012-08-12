@@ -30,6 +30,7 @@ var nodefetch = {
       var url = "http://jackfranklin.org/nodefetch.json"
       console.log("-> No settings file detected. Downloading default from " + url);
       var self = this;
+      //TODO: this could be nicer, I reckon.
       this.wget(url, this.userHome() + "/nodefetch.json", function() {
         self.fromSettings.call(self);
       });
