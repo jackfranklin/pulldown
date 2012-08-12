@@ -67,6 +67,15 @@ This is my first NPM module so I'm still learning, but the most pressing TODOs a
 * Rewrite to use [ShellJS](https://github.com/arturadib/shelljs/).
 * Rewrite to use [CommanderJS](https://github.com/visionmedia/commander.js) for better CLI.
 
+## Contributing
+
+The WIP branch is the __develop__ branch, so any contributors should:
+
+* Fork the repository
+* work on the __develop__ branch
+* when you're ready to make a pull request, merge master INTO your develop branch
+* make the pull request to merge your develop branch into master
+
 
 ## Changelog
 
