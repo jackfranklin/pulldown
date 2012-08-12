@@ -57,4 +57,5 @@ This is my first NPM module so I'm still learning, but the most pressing TODOs a
 
 * Inline help. Currently running `nodefetch --help` will simply tell you to look on Github.
 * Move `nodefetch.json` into the package for nodefetch so I can simply update the default one through Github.
+* Unit Tests?
 
