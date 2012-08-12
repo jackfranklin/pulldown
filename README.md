@@ -56,6 +56,5 @@ That will download jQuery into `j.js`.
 This is my first NPM module so I'm still learning, but the most pressing TODOs are:
 
 * Inline help. Currently running `nodefetch --help` will simply tell you to look on Github.
-* Code Refactor. Some of the code could be tidier and probably more efficient too.
 * Move `nodefetch.json` into the package for nodefetch so I can simply update the default one through Github.
 
