@@ -49,13 +49,19 @@ Once that's done, downloading jQuery is as simple as:
 nodefetch jquery
 ```
 
-This will download jQuery into the PWD to `jquery.min.js`, the file it's stored as on the server. If you want to save it to a different name, pass it as a parameter:
+__NEW__ you can pass in multiple libraries to download them all at once:
 
 ```
-nodefetch jquery j.js
+nodefetch jquery underscore backbone
 ```
 
-That will download jQuery into `j.js`.
+If you want to specify the file name for the library, pass it in like so:
+
+```
+nodefetch jquery:jquery.js backbone underscore:u.js
+```
+
+That will download jQuery into `jquery.js`, download Backbone to a file named the same as the file on the server, and Underscore to `u.js`.
 
 ## Todo
 
@@ -76,8 +82,13 @@ The WIP branch is the __develop__ branch, so any contributors should:
 * when you're ready to make a pull request, merge master INTO your develop branch
 * make the pull request to merge your develop branch into master
 
+Any questions, feel free to ask :)
+
 
 ## Changelog
+
+#####V0.0.4
+* able to download multiple libraries at once, new syntax for specifying the specific file name to download to (see above documentation)
 
 #####V0.0.3
 * inline help added through `nodefetch --help`

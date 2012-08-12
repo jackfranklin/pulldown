@@ -8,16 +8,14 @@ var fs = require('fs');
 
 //terminal output colours!
 //via http://roguejs.com/2011-11-30/console-colors-in-node-js/
-//currently only use RED
 var red, blue, reset;
 red   = '\033[31m';
-blue  = '\033[34m';
 green = '\033[32m';
 reset = '\033[0m';
 
 
 var nodefetch = {
-  VERSION: "0.0.3",
+  VERSION: "0.0.4",
   packages: {},
   gotPackages: false,
   userHome: function() {
@@ -65,17 +63,20 @@ var nodefetch = {
     });
   },
   getTarget: function() {
-    var fileUrl = this.packages[process.argv[2]];
-    if(process.argv[3]) {
-      console.log("-> Attempting to download package", process.argv[2], "to", process.argv[3]);
-    } else {
-      console.log("-> Attempting to download package", process.argv[2]);
+    var userArgs = process.argv.slice(2); //remove first two to get at the user commands
+    for(var i = 0; i < userArgs.length; i++) {
+      this.processPackageArg(userArgs[i]);
     }
+  },
+  processPackageArg: function(arg) {
+    var spl = arg.split(":");
+    var fileUrl = this.packages[spl[0]];
+    console.log("-> Attempting to download package", arg, "from", fileUrl);
     if(!fileUrl) {
-      console.log("-> " + red + "ERROR: Package " + fileUrl + " not found", reset);
+      console.log("-> " + red + "ERROR: Package " + spl[0] + " not found", reset);
       process.exit(1);
     } else {
-      this.wget(fileUrl, process.argv[3]);
+      this.wget(fileUrl, spl[1]);
     }
   }
 };
@@ -93,11 +94,13 @@ if(process.argv[2] == "--help") {
   console.log("---> This file contains a list of packages, which you can edit as you please");
   console.log("---> once you have this package.json, to install a library, type 'nodefetch' followed by the library name.");
   console.log("---> for example: 'nodefetch jquery' will install the latest jQuery");
+  console.log("---> download multiple libraries at once: 'nodefetch jquery backbone underscore'");
   console.log("");
   console.log("-> FURTHER OPTIONS");
   console.log("---> if you want to store the library to different filename than the one that it's called on the server")
-  console.log("---> you can pass in an optional filename as the second parameter");
-  console.log("---> for example, 'nodefetch jquery foo.js' will download jQuery into foo.js");
+  console.log("---> you can pass in an optional filename with the library name, colon separated");
+  console.log("---> for example, 'nodefetch jquery:foo.js' will download jQuery into foo.js");
+  console.log("---> 'nodefetch jquery:foo.js backbone underscore:u.js' downloads jQuery to foo.js, Backbone to default and Underscore to u.js");
   console.log("");
   console.log("-> any feedback, help or issues, please report them on Github: https://github.com/jackfranklin/nodefetch/");
   console.log("");
