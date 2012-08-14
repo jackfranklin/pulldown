@@ -23,13 +23,12 @@ var nodefetch = {
   },
   checkForSettings: function() {
     try {
-      // Query the entry
-      var settings = fs.lstatSync(this.userHome() + '/nodefetch.json');
+      fs.lstatSync(this.userHome() + '/nodefetch.json');
       console.log("-> Found settings file");
       this.fromSettings();
     }
     catch (e) {
-      var url = "http://jackfranklin.org/nodefetch.json"
+      var url = "http://jackfranklin.org/nodefetch.json";
       console.log("-> " + red + "No settings file detected.", reset, "Downloading default from " + url);
       var self = this;
       //TODO: this could be nicer, I reckon.
@@ -48,6 +47,7 @@ var nodefetch = {
     //got the packages, lets get the one the user wants
     this.getTarget();
   },
+  updateSettings: function() { this.gotPackages = false; },
   wget: function(fileUrl, output, cb) {
     //default to the filename on the server if one is not passed in
     output = output || url.parse(fileUrl).pathname.split('/').pop();
@@ -90,20 +90,24 @@ if(process.argv[2] == "--help") {
   console.log("-> USAGE: 'nodefetch package_name [file_name]'");
   console.log("");
   console.log("-> BASIC USAGE");
-  console.log("---> when you first run nodefetch, a package.json file will be downloaded to ~/nodefetch.json.")
+  console.log("---> when you first run nodefetch, a package.json file will be downloaded to ~/nodefetch.json.");
   console.log("---> This file contains a list of packages, which you can edit as you please");
   console.log("---> once you have this package.json, to install a library, type 'nodefetch' followed by the library name.");
   console.log("---> for example: 'nodefetch jquery' will install the latest jQuery");
   console.log("---> download multiple libraries at once: 'nodefetch jquery backbone underscore'");
   console.log("");
   console.log("-> FURTHER OPTIONS");
-  console.log("---> if you want to store the library to different filename than the one that it's called on the server")
+  console.log("---> if you want to store the library to different filename than the one that it's called on the server");
   console.log("---> you can pass in an optional filename with the library name, colon separated");
   console.log("---> for example, 'nodefetch jquery:foo.js' will download jQuery into foo.js");
   console.log("---> 'nodefetch jquery:foo.js backbone underscore:u.js' downloads jQuery to foo.js, Backbone to default and Underscore to u.js");
   console.log("");
   console.log("-> any feedback, help or issues, please report them on Github: https://github.com/jackfranklin/nodefetch/");
   console.log("");
+  process.exit(1);
+} else if (process.argv[2] == "--update") {
+  nodefetch.updateSettings();
+  console.log("-> nodefetch will now update from nodefetch.json next time it's run");
   process.exit(1);
 }
 
