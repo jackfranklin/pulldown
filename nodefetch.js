@@ -38,13 +38,8 @@ var nodefetch = {
     }
   },
   fromSettings: function() {
-    if(!this.gotPackages) {
-      var fs = require('fs');
-      var packagesJson = fs.readFileSync(this.userHome() + '/nodefetch.json').toString();
-      this.packages = JSON.parse(packagesJson);
-      this.gotPackages = true;
-    }
-    //got the packages, lets get the one the user wants
+    var fs = require('fs');
+    this.packages = JSON.parse(fs.readFileSync(this.userHome() + '/nodefetch.json').toString());
     this.getTarget();
   },
   updateSettings: function() { this.gotPackages = false; },
@@ -105,12 +100,7 @@ if(process.argv[2] == "--help") {
   console.log("-> any feedback, help or issues, please report them on Github: https://github.com/jackfranklin/nodefetch/");
   console.log("");
   process.exit(1);
-} else if (process.argv[2] == "--update") {
-  nodefetch.updateSettings();
-  console.log("-> nodefetch will now update from nodefetch.json next time it's run");
-  process.exit(1);
 }
-
 //get things going
 
 nodefetch.checkForSettings();
