@@ -31,7 +31,7 @@ var nodefetch = {
       console.log("-> " + red + "No settings file detected.", reset, "Downloading default from " + url);
       var self = this;
       //TODO: this could be nicer, I reckon.
-      this.wget(url, this.userHome() + "/nodefetch.json", function() {
+      this.getFile(url, this.userHome() + "/nodefetch.json", function() {
         self.fromSettings.call(self);
       });
     }
