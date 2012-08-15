@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 
 
+
 //some dependencies
 var url = require('url');
 var fs = require('fs');
@@ -16,6 +17,7 @@ reset = '\033[0m';
 
 var nodefetch = {
   VERSION: "0.1.0",
+  isTest: false,
   packages: {},
   userHome: function() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -97,9 +99,17 @@ if(process.argv[2] == "--help") {
   console.log("");
   process.exit(1);
 }
-//get things going
 
-nodefetch.checkForSettings();
+
+
+//if we are not testing, execute
+if(!process.argv[1].indexOf("nodefetch/test/tests") > 0) {
+ nodefetch.checkForSettings();
+}
+
+
+//expose (mainly for testing)
+module.exports = nodefetch;
 
 /*
  * TODO: check on Windows
