@@ -2,7 +2,6 @@
 
 
 //some dependencies
-var exec = require('child_process').exec;
 var url = require('url');
 var fs = require('fs');
 var request = require('request');
@@ -16,9 +15,8 @@ reset = '\033[0m';
 
 
 var nodefetch = {
-  VERSION: "0.0.4",
+  VERSION: "0.1.0",
   packages: {},
-  gotPackages: false,
   userHome: function() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
   },
