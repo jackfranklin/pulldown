@@ -2,47 +2,41 @@ var assert = require('assert');
 var nodefetch = require('../nodefetch');
 var shell = require('shelljs');
 var url = require('url');
+var MTW = require('minitestwrap');
 
 //make sure tests are run from within the test dir so the testdls folder goes in the right place
-var pwd = url.parse(shell.pwd()).pathname.split("/").pop();
-if(pwd == "nodefetch") {
-  shell.cd("test");
-}
-//use a scrap folder for all the test DLs
-shell.rm("-rf", "testdls");
-shell.mkdir("testdls");
-shell.cd("testdls");
+MTW.beforeAll(function() {
+  var pwd = url.parse(shell.pwd()).pathname.split("/").pop();
+  if(pwd == "nodefetch") {
+    shell.cd("test");
+  }
+  //use a scrap folder for all the test DLs
+  shell.rm("-rf", "testdls");
+  shell.mkdir("testdls");
+  shell.cd("testdls");
 
-//override userHome method so I can use a test nodefetch.json file in the test dir rather than the "real" one in the home
-nodefetch.userHome = function() {
-  return ".";
-}
+  nodefetch.userHome = function() {
+    return ".";
+  }
+});
 
-//quick utility function to get rid of our test settings file
-function removeTestFiles() {
-  shell.test("-f", "nodefetch.json") && shell.rm("nodefetch.json");
-}
-
-var tests = {};
-
-//test getSettings
-tests.getSettings = function() {
+MTW.addTest("getSettings", function() {
   assert.equal(nodefetch.settingsFileExists(), false);
   nodefetch.getSettingsFile(function() {
     assert.equal(nodefetch.settingsFileExists(), true);
   });
-};
+});
 
-//test readPackagesFromSettings
-tests.readPackagesFromSettings = function() {
+
+MTW.addTest("readPackagesFromSettings", function() {
   nodefetch.getSettingsFile(function() {
     var packages = nodefetch.readPackagesFromSettings();
     assert.equal(packages['jquery'], 'http://code.jquery.com/jquery.min.js');
     assert.equal(packages['reset'], 'http://meyerweb.com/eric/tools/css/reset/reset.css');
   });
-};
+});
 
-tests.updateSettings = function() {
+MTW.addTest("updateSettings", function() {
   nodefetch.getSettingsFile(function() {
     var packages = nodefetch.readPackagesFromSettings();
     nodefetch.updateSettings();
@@ -50,9 +44,9 @@ tests.updateSettings = function() {
     packages = nodefetch.readPackagesFromSettings();
     assert.notEqual(nodefetch.packages, {});
   });
-};
+});
 
-tests.processArguments = function() {
+MTW.addTest("processArguments", function() {
   nodefetch.getSettingsFile(function() {
     nodefetch.readPackagesFromSettings();
     assert.equal(nodefetch.parsePackageArgument("jquery").url, "http://code.jquery.com/jquery.min.js");
@@ -62,9 +56,9 @@ tests.processArguments = function() {
       nodefetch.parsePackageArgument("doesntexist");
     }, Error);
   });
-}
+});
 
-tests.getFile = function() {
+MTW.addTest("getFile", function() {
   nodefetch.getSettingsFile(function() {
     nodefetch.readPackagesFromSettings();
     var parsed = nodefetch.parsePackageArgument("jquery:test-download.js");
@@ -76,11 +70,11 @@ tests.getFile = function() {
       assert.ok(shell.test("-f", parsed2.output));
     });
   });
-};
+});
 
-//very quick and dirty test runner but it does the job
-for(test in tests) {
-  removeTestFiles();
-  console.log("-> Executing", test);
-  tests[test]();
-}
+MTW.beforeEach(function() {
+  shell.test("-f", "nodefetch.json") && shell.rm("nodefetch.json");
+});
+
+
+MTW.run();
