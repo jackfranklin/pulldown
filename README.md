@@ -68,9 +68,7 @@ That will download jQuery into `jquery.js`, download Backbone to a file named th
 This is my first NPM module so I'm still learning, but the most pressing TODOs are:
 
 * Move `nodefetch.json` into the package for nodefetch so I can simply update the default one through Github.
-* Unit Tests?
 * Improve error handling
-* Rewrite to use [ShellJS](https://github.com/arturadib/shelljs/).
 * Rewrite to use [CommanderJS](https://github.com/visionmedia/commander.js) for better CLI.
 
 ## Contributing
@@ -86,6 +84,15 @@ Any questions, feel free to ask :)
 
 
 ## Changelog
+
+#####V0.1.0
+Big enough changes to warrant the step up to 0.1.0
+
+* unit tests! (see above for how to use)
+* rewrote to __no longer use wget__ but instead use [Request](https://github.com/mikeal/request/) which is on NPM. No more external dependencies ftw! Thanks @mheap for the recommendation
+* large rewrite to support the above and unit tests. Code is a bit tidier now.
+* the `nodefetch` object is now exported as a module.
+
 
 #####V0.0.4
 * able to download multiple libraries at once, new syntax for specifying the specific file name to download to (see above documentation)

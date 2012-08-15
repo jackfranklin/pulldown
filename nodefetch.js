@@ -9,7 +9,7 @@ var isTest = false;
 
 //terminal output colours!
 //via http://roguejs.com/2011-11-30/console-colors-in-node-js/
-var red, blue, reset;
+var red, green, reset;
 red   = '\033[31m';
 green = '\033[32m';
 reset = '\033[0m';
