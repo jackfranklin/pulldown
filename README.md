@@ -61,15 +61,6 @@ nodefetch jquery:jquery.js backbone underscore:u.js
 
 That will download jQuery into `jquery.js`, download Backbone to a file named the same as the file on the server, and Underscore to `u.js`.
 
-## Todo
-
-This is my first NPM module so I'm still learning, but the most pressing TODOs are:
-
-* Move `nodefetch.json` into the package for nodefetch so I can simply update the default one through Github.
-* Improve error handling
-* Rewrite to use [CommanderJS](https://github.com/visionmedia/commander.js) for better CLI.
-* Make it work for zips - so you could pull down packages like CodeIgniter, HTML5 BoilerPlate and so on.
-* Update the default `package.json` to contain loads more.
 
 ## Contributing
 
@@ -88,7 +79,23 @@ The WIP branch is the __develop__ branch, so any contributors should:
 
 * All test downloads go into `test/testdls`. This folder is cleaned before each run of the tests. It's also added to the `.gitignore`.
 
-* The tests use a very simple test runner. Just add your tests to the `test` object:
+* The test use Node's `assert`, but wrapped with my [minitestwrap](https://github.com/jackfranklin/node-minitestwrap) library. To add a new test, simply do:
+
+```javascript
+MTW.addTest("description", function() {
+  //assertions here
+});
+```
+
+## Todo
+
+This is my first NPM module so I'm still learning, but the most pressing TODOs are:
+
+* Move `nodefetch.json` into the package for nodefetch so I can simply update the default one through Github.
+* Improve error handling
+* Rewrite to use [CommanderJS](https://github.com/visionmedia/commander.js) for better CLI.
+* Make it work for zips - so you could pull down packages like CodeIgniter, HTML5 BoilerPlate and so on.
+* Update the default `package.json` to contain loads more.
 
 ```javascript
 test.testSomeFunc = function() {
