@@ -8,8 +8,9 @@ nodefetch.userHome = function() {
 }
 
 //quick utility function to get rid of our test settings file
-function removeSettings() {
+function removeTestFiles() {
   shell.test("-f", "nodefetch.json") && shell.rm("nodefetch.json");
+  shell.test("-f", "test-download.js") && shell.rm("test-download.js");
 }
 
 var tests = {};
@@ -41,19 +42,32 @@ tests.updateSettings = function() {
   });
 };
 
-
 tests.processArguments = function() {
   nodefetch.getSettingsFile(function() {
     nodefetch.readPackagesFromSettings();
-    assert.equal(nodefetch.getPackageUrl("jquery").url, "http://code.jquery.com/jquery.min.js");
-    assert.equal(nodefetch.getPackageUrl("jquery").output, "jquery.min.js");
-    assert.equal(nodefetch.getPackageUrl("backbone:b.js").output, "b.js");
+    assert.equal(nodefetch.parsePackageArgument("jquery").url, "http://code.jquery.com/jquery.min.js");
+    assert.equal(nodefetch.parsePackageArgument("jquery").output, "jquery.min.js");
+    assert.equal(nodefetch.parsePackageArgument("backbone:b.js").output, "b.js");
+    assert.throws(function() {
+      nodefetch.parsePackageArgument("doesntexist");
+    }, Error);
   });
 }
 
+tests.getFile = function() {
+  nodefetch.getSettingsFile(function() {
+    nodefetch.readPackagesFromSettings();
+    var parsed = nodefetch.parsePackageArgument("jquery:test-download.js");
+    nodefetch.getFile(parsed.url, parsed.output, function() {
+      assert.ok(shell.test("-f", parsed.output));
+      removeTestFiles();
+    });
+  });
+};
+
 //very quick and dirty test runner but it does the job
 for(test in tests) {
-  removeSettings();
+  removeTestFiles();
   console.log("-> Executing", test);
   tests[test]();
 }

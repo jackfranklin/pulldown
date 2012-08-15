@@ -49,42 +49,33 @@ var nodefetch = {
     return this.packages;
   },
   updateSettings: function() { this.packages = {}; },
+  getTarget: function() {
+    var userArgs = process.argv.slice(2); //remove first two to get at the user commands
+    for(var i = 0; i < userArgs.length; i++) {
+      var argResponse = this.parsePackageArgument(userArgs[i])
+      this.getFile(argResponse.url, argResponse.output);
+    }
+  },
+  parsePackageArgument: function(arg) {
+    var args = arg.split(":");
+    var fileUrl = this.packages[args[0]];
+    if(!fileUrl) {
+      throw new Error(red + " ERROR " + args[0] + " does not exist" + reset);
+    }
+    return {
+      url: fileUrl,
+      output: args[1] || url.parse(fileUrl).pathname.split('/').pop()
+    };
+  },
   getFile: function(fileUrl, output, cb) {
-    output = output || url.parse(fileUrl).pathname.split('/').pop();
     request(fileUrl, function(err, resp, body) {
       if(err) throw err;
       fs.writeFile(output, body, function(err) {
         if(err) throw err;
         if(!isTest) console.log("-> " + green + "SUCCESS: " + fileUrl + " has been written to " + output, reset);
-        if(cb && typeof cb == "function") cb();
+        (cb && typeof cb == "function" && cb());
       });
     });
-  },
-  getTarget: function() {
-    var userArgs = process.argv.slice(2); //remove first two to get at the user commands
-    for(var i = 0; i < userArgs.length; i++) {
-      var argResponse = this.getPackageUrl(userArgs[i])
-      this.getFile(argResponse.url, argResponse.output);
-    }
-  },
-  processPackageArg: function(arg) {
-    var spl = arg.split(":");
-    var fileUrl = this.packages[spl[0]];
-    console.log("-> Attempting to download package", spl[0], "from", fileUrl);
-    if(!fileUrl) {
-      console.log("-> " + red + "ERROR: Package " + spl[0] + " not found", reset);
-      process.exit(1);
-    } else {
-      this.getFile(fileUrl, spl[1]);
-    }
-  },
-  getPackageUrl: function(arg) {
-    var args = arg.split(":");
-    var fileUrl = this.packages[args[0]];
-    return {
-      url: fileUrl,
-      output: args[1] || url.parse(fileUrl).pathname.split('/').pop()
-    };
   }
 };
 
