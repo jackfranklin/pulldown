@@ -79,11 +79,26 @@ The WIP branch is the __develop__ branch, so any contributors should:
 * work on the __develop__ branch
 * when you're ready to make a pull request, merge master INTO your develop branch
 * make the pull request to merge your develop branch into master
+* make sure you have tests for the added functionality and all tests pass!
 
 
 ## Testing
 
-The tests are within the `test/` folder. To run them, simply run: `node tests` from within the test folder, or `node test/tests` from the project root.
+* The tests are within the `test/` folder. To run them, simply run: `node tests` from within the test folder, or `node test/tests` from the project root.
+
+* All test downloads go into `test/testdls`. This folder is cleaned before each run of the tests. It's also added to the `.gitignore`.
+
+* The tests use a very simple test runner. Just add your tests to the `test` object:
+
+```javascript
+test.testSomeFunc = function() {
+  assert.equal(1, 1);
+};
+```
+
+* The test use Node's assert library.
+
+
 
 Any questions, feel free to ask :)
 
