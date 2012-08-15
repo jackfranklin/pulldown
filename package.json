@@ -1,13 +1,20 @@
 {
-    "name": "nodefetch",
-    "version": "0.0.4",
-    "description": "Fetch popular web libraries from the net",
-    "preferGlobal": "true",
-    "bin": { "nodefetch": "nodefetch.js" },
-    "author": "Jack Franklin",
-    "engines": { "node": "*" },
-    "repository": {
-      "type" : "git",
-      "url" : "git@github.com:jackfranklin/nodefetch.git"
-    }
+  "name": "nodefetch",
+  "version": "0.0.4",
+  "description": "Fetch popular web libraries from the net",
+  "preferGlobal": "true",
+  "bin": {
+    "nodefetch": "nodefetch.js"
+  },
+  "author": "Jack Franklin",
+  "engines": {
+    "node": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jackfranklin/nodefetch.git"
+  },
+  "dependencies": {
+    "request": "~2.10.0"
+  }
 }

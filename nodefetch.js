@@ -5,6 +5,7 @@
 var exec = require('child_process').exec;
 var url = require('url');
 var fs = require('fs');
+var request = require('request');
 
 //terminal output colours!
 //via http://roguejs.com/2011-11-30/console-colors-in-node-js/
@@ -43,6 +44,17 @@ var nodefetch = {
     this.getTarget();
   },
   updateSettings: function() { this.gotPackages = false; },
+  getFile: function(fileUrl, output, cb) {
+    output = output || url.parse(fileUrl).pathname.split('/').pop();
+    request(fileUrl, function(err, resp, body) {
+      if(err) throw err;
+      console.log("-> " + green + "SUCCESS: " + fileUrl + " has been downloaded", reset);
+      fs.writeFile(output, body, function(err) {
+        if(err) throw err;
+        console.log("-> " + green + "SUCESS: " + output + " has been written", reset);
+      });
+    });
+  },
   wget: function(fileUrl, output, cb) {
     //default to the filename on the server if one is not passed in
     output = output || url.parse(fileUrl).pathname.split('/').pop();
@@ -103,8 +115,9 @@ if(process.argv[2] == "--help") {
 }
 //get things going
 
-nodefetch.checkForSettings();
+//nodefetch.checkForSettings();
 
+nodefetch.getFile("http://code.jquery.com/jquery.min.js");
 /*
  * TODO: check on Windows
  */
