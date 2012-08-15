@@ -31,7 +31,7 @@ var nodefetch = {
   },
   getSettingsFile: function(cb) {
     if(this.settingsFileExists()) {
-      if(!isTest) console.log("-> " + green + "Settings file found");
+      if(!isTest) console.log("-> " + green + "Settings file found", reset);
       (cb && typeof cb == "function" && cb());
       return;
     }
@@ -104,6 +104,7 @@ if(process.argv[2] == "--help") {
 }
 
 
+//check if we are in test mode
 if(!(process.argv[1].indexOf("nodefetch/test/tests") > -1)) {
   nodefetch.getSettingsFile(function() {
     nodefetch.readPackagesFromSettings();
