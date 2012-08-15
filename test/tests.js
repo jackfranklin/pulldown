@@ -1,8 +1,13 @@
 var assert = require('assert');
 var nodefetch = require('../nodefetch');
 var shell = require('shelljs');
+var url = require('url');
 
-
+//make sure tests are run from within the test dir so the testdls folder goes in the right place
+var pwd = url.parse(shell.pwd()).pathname.split("/").pop();
+if(pwd == "nodefetch") {
+  shell.cd("test");
+}
 //use a scrap folder for all the test DLs
 shell.rm("-rf", "testdls");
 shell.mkdir("testdls");
