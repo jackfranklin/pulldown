@@ -48,25 +48,11 @@ var nodefetch = {
     output = output || url.parse(fileUrl).pathname.split('/').pop();
     request(fileUrl, function(err, resp, body) {
       if(err) throw err;
-      console.log("-> " + green + "SUCCESS: " + fileUrl + " has been downloaded", reset);
       fs.writeFile(output, body, function(err) {
         if(err) throw err;
-        console.log("-> " + green + "SUCESS: " + output + " has been written", reset);
+        console.log("-> " + green + "SUCCESS: " + fileUrl + " has been written to " + output, reset);
+        if(cb && typeof cb == "function") cb();
       });
-    });
-  },
-  wget: function(fileUrl, output, cb) {
-    //default to the filename on the server if one is not passed in
-    output = output || url.parse(fileUrl).pathname.split('/').pop();
-    var wgetCommand = "wget -O " + output + " " + fileUrl;
-    var child = exec(wgetCommand, function(err, stdout, stderr) {
-      if(err) {
-        //TODO handle this better
-        throw err;
-      } else {
-        console.log("-> " + green + "SUCCESS: " + fileUrl + " downloaded to " + output, reset);
-      }
-      cb && cb();
     });
   },
   getTarget: function() {
@@ -83,7 +69,7 @@ var nodefetch = {
       console.log("-> " + red + "ERROR: Package " + spl[0] + " not found", reset);
       process.exit(1);
     } else {
-      this.wget(fileUrl, spl[1]);
+      this.getFile(fileUrl, spl[1]);
     }
   }
 };
@@ -115,9 +101,8 @@ if(process.argv[2] == "--help") {
 }
 //get things going
 
-//nodefetch.checkForSettings();
+nodefetch.checkForSettings();
 
-nodefetch.getFile("http://code.jquery.com/jquery.min.js");
 /*
  * TODO: check on Windows
  */
