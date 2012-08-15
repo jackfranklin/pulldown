@@ -3,7 +3,7 @@ var nodefetch = require('../nodefetch');
 var shell = require('shelljs');
 
 
-//use a scrap folder for all the test DLs that is automatically removed after each test run
+//use a scrap folder for all the test DLs
 shell.rm("-rf", "testdls");
 shell.mkdir("testdls");
 shell.cd("testdls");
@@ -65,8 +65,10 @@ tests.getFile = function() {
     var parsed = nodefetch.parsePackageArgument("jquery:test-download.js");
     nodefetch.getFile(parsed.url, parsed.output, function() {
       assert.ok(shell.test("-f", parsed.output));
-      shell.cd("../");
-      shell.rm("-rf", "testdls");
+    });
+    var parsed2 = nodefetch.parsePackageArgument("jquery");
+    nodefetch.getFile(parsed2.url, parsed2.output, function() {
+      assert.ok(shell.test("-f", parsed2.output));
     });
   });
 };
