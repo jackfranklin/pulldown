@@ -80,6 +80,11 @@ The WIP branch is the __develop__ branch, so any contributors should:
 * when you're ready to make a pull request, merge master INTO your develop branch
 * make the pull request to merge your develop branch into master
 
+
+## Testing
+
+The tests are within the `test/` folder. To run them, simply run: `node tests` from within the test folder, or `node test/tests` from the project root.
+
 Any questions, feel free to ask :)
 
 
@@ -92,7 +97,6 @@ Big enough changes to warrant the step up to 0.1.0
 * rewrote to __no longer use wget__ but instead use [Request](https://github.com/mikeal/request/) which is on NPM. No more external dependencies ftw! Thanks @mheap for the recommendation
 * large rewrite to support the above and unit tests. Code is a bit tidier now.
 * the `nodefetch` object is now exported as a module.
-
 
 #####V0.0.4
 * able to download multiple libraries at once, new syntax for specifying the specific file name to download to (see above documentation)

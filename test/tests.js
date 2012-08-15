@@ -2,6 +2,12 @@ var assert = require('assert');
 var nodefetch = require('../nodefetch');
 var shell = require('shelljs');
 
+
+//use a scrap folder for all the test DLs that is automatically removed after each test run
+shell.rm("-rf", "testdls");
+shell.mkdir("testdls");
+shell.cd("testdls");
+
 //override userHome method so I can use a test nodefetch.json file in the test dir rather than the "real" one in the home
 nodefetch.userHome = function() {
   return ".";
@@ -10,7 +16,6 @@ nodefetch.userHome = function() {
 //quick utility function to get rid of our test settings file
 function removeTestFiles() {
   shell.test("-f", "nodefetch.json") && shell.rm("nodefetch.json");
-  shell.test("-f", "test-download.js") && shell.rm("test-download.js");
 }
 
 var tests = {};
@@ -60,7 +65,8 @@ tests.getFile = function() {
     var parsed = nodefetch.parsePackageArgument("jquery:test-download.js");
     nodefetch.getFile(parsed.url, parsed.output, function() {
       assert.ok(shell.test("-f", parsed.output));
-      removeTestFiles();
+      shell.cd("../");
+      shell.rm("-rf", "testdls");
     });
   });
 };
