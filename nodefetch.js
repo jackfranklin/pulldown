@@ -1,7 +1,5 @@
 #! /usr/bin/env node
 
-
-
 //some dependencies
 var url = require('url');
 var fs = require('fs');
@@ -19,7 +17,6 @@ reset = '\033[0m';
 
 var nodefetch = {
   VERSION: "0.1.0",
-  isTest: false,
   packages: {},
   userHome: function() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -34,6 +31,7 @@ var nodefetch = {
   },
   getSettingsFile: function(cb) {
     if(this.settingsFileExists()) {
+      if(!isTest) console.log("-> " + green + "Settings file found");
       (cb && typeof cb == "function" && cb());
       return;
     }
@@ -49,7 +47,7 @@ var nodefetch = {
     return this.packages;
   },
   updateSettings: function() { this.packages = {}; },
-  getTarget: function() {
+  processUserArgs: function() {
     var userArgs = process.argv.slice(2); //remove first two to get at the user commands
     for(var i = 0; i < userArgs.length; i++) {
       var argResponse = this.parsePackageArgument(userArgs[i])
@@ -106,14 +104,18 @@ if(process.argv[2] == "--help") {
 }
 
 
-
-//if we are not testing, execute
-if(!process.argv[1].indexOf("nodefetch/test/tests") > 0) {
- nodefetch.checkForSettings();
+if(!(process.argv[1].indexOf("nodefetch/test/tests") > -1)) {
+  nodefetch.getSettingsFile(function() {
+    nodefetch.readPackagesFromSettings();
+    nodefetch.processUserArgs();
+  });
 } else {
   isTest = true;
 }
 
+
+var init = function() {
+}
 
 //expose (mainly for testing)
 module.exports = nodefetch;
