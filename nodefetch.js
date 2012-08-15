@@ -114,10 +114,6 @@ if(!(process.argv[1].indexOf("nodefetch/test/tests") > -1)) {
   isTest = true;
 }
 
-
-var init = function() {
-}
-
 //expose (mainly for testing)
 module.exports = nodefetch;
 
