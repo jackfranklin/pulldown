@@ -7,6 +7,8 @@ var url = require('url');
 var fs = require('fs');
 var request = require('request');
 
+var isTest = false;
+
 //terminal output colours!
 //via http://roguejs.com/2011-11-30/console-colors-in-node-js/
 var red, blue, reset;
@@ -22,35 +24,38 @@ var nodefetch = {
   userHome: function() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
   },
-  checkForSettings: function() {
+  settingsFileExists: function() {
     try {
       fs.lstatSync(this.userHome() + '/nodefetch.json');
-      console.log("-> Found settings file");
-      this.fromSettings();
+    } catch(e) {
+      return false;
     }
-    catch (e) {
-      var url = "http://jackfranklin.org/nodefetch.json";
-      console.log("-> " + red + "No settings file detected.", reset, "Downloading default from " + url);
-      var self = this;
-      //TODO: this could be nicer, I reckon.
-      this.getFile(url, this.userHome() + "/nodefetch.json", function() {
-        self.fromSettings.call(self);
-      });
-    }
+    return true;
   },
-  fromSettings: function() {
-    var fs = require('fs');
+  getSettingsFile: function(cb) {
+    if(this.settingsFileExists()) {
+      (cb && typeof cb == "function" && cb());
+      return;
+    }
+    var url = "http://jackfranklin.org/nodefetch.json";
+    if(!isTest) console.log("-> " + red + "No settings file detected.", reset, "Downloading default from " + url);
+    this.getFile(url, this.userHome() + "/nodefetch.json", function() {
+      (cb && typeof cb == "function" && cb());
+    });
+  },
+  readPackagesFromSettings: function() {
+    if(Object.keys(this.packages).length > 0) return this.packages;
     this.packages = JSON.parse(fs.readFileSync(this.userHome() + '/nodefetch.json').toString());
-    this.getTarget();
+    return this.packages;
   },
-  updateSettings: function() { this.gotPackages = false; },
+  updateSettings: function() { this.packages = {}; },
   getFile: function(fileUrl, output, cb) {
     output = output || url.parse(fileUrl).pathname.split('/').pop();
     request(fileUrl, function(err, resp, body) {
       if(err) throw err;
       fs.writeFile(output, body, function(err) {
         if(err) throw err;
-        console.log("-> " + green + "SUCCESS: " + fileUrl + " has been written to " + output, reset);
+        if(!isTest) console.log("-> " + green + "SUCCESS: " + fileUrl + " has been written to " + output, reset);
         if(cb && typeof cb == "function") cb();
       });
     });
@@ -58,7 +63,8 @@ var nodefetch = {
   getTarget: function() {
     var userArgs = process.argv.slice(2); //remove first two to get at the user commands
     for(var i = 0; i < userArgs.length; i++) {
-      this.processPackageArg(userArgs[i]);
+      var argResponse = this.getPackageUrl(userArgs[i])
+      this.getFile(argResponse.url, argResponse.output);
     }
   },
   processPackageArg: function(arg) {
@@ -71,6 +77,14 @@ var nodefetch = {
     } else {
       this.getFile(fileUrl, spl[1]);
     }
+  },
+  getPackageUrl: function(arg) {
+    var args = arg.split(":");
+    var fileUrl = this.packages[args[0]];
+    return {
+      url: fileUrl,
+      output: args[1] || url.parse(fileUrl).pathname.split('/').pop()
+    };
   }
 };
 
@@ -105,6 +119,8 @@ if(process.argv[2] == "--help") {
 //if we are not testing, execute
 if(!process.argv[1].indexOf("nodefetch/test/tests") > 0) {
  nodefetch.checkForSettings();
+} else {
+  isTest = true;
 }
 
 
