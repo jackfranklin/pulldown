@@ -16,14 +16,14 @@ reset = '\033[0m';
 
 
 var nodefetch = {
-  VERSION: "0.1.0",
+  VERSION: "0.1.1",
   packages: {},
   userHome: function() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
   },
   settingsFileExists: function() {
     try {
-      fs.lstatSync(this.userHome() + '/nodefetch.json');
+      fs.lstatSync(this.userHome() + '/.nodefetch.json');
     } catch(e) {
       return false;
     }
@@ -37,13 +37,13 @@ var nodefetch = {
     }
     var url = "http://jackfranklin.org/nodefetch.json";
     if(!isTest) console.log("-> " + red + "No settings file detected.", reset, "Downloading default from " + url);
-    this.getFile(url, this.userHome() + "/nodefetch.json", function() {
+    this.getFile(url, this.userHome() + "/.nodefetch.json", function() {
       (cb && typeof cb == "function" && cb());
     });
   },
   readPackagesFromSettings: function() {
     if(Object.keys(this.packages).length > 0) return this.packages;
-    this.packages = JSON.parse(fs.readFileSync(this.userHome() + '/nodefetch.json').toString());
+    this.packages = JSON.parse(fs.readFileSync(this.userHome() + '/.nodefetch.json').toString());
     return this.packages;
   },
   updateSettings: function() { this.packages = {}; },
@@ -86,7 +86,7 @@ if(process.argv[2] == "--help") {
   console.log("-> USAGE: 'nodefetch package_name [file_name]'");
   console.log("");
   console.log("-> BASIC USAGE");
-  console.log("---> when you first run nodefetch, a package.json file will be downloaded to ~/nodefetch.json.");
+  console.log("---> when you first run nodefetch, a package.json file will be downloaded to ~/.nodefetch.json.");
   console.log("---> This file contains a list of packages, which you can edit as you please");
   console.log("---> once you have this package.json, to install a library, type 'nodefetch' followed by the library name.");
   console.log("---> for example: 'nodefetch jquery' will install the latest jQuery");

@@ -23,9 +23,18 @@ sudo npm install -g nodefetch
 
 You will then have the `nodefetch` executable ready for use.
 
+
+## Upgrading
+
+```
+npm update nodefetch -g
+```
+
 ## Usage
 
-The first time you run nodefetch it will pull down a sample JSON file, `nodefetch.json` into your home directory. This file contains libraries and acts also as an example of how to add your own to nodefetch. It looks like so:
+__NEW__: file is stored in home dir as `.nodefetch.json` (notice the starting period)
+
+The first time you run nodefetch it will pull down a sample JSON file, `nodefetch.json` into your home directory as `.nodefetch.json`. This file contains libraries and acts also as an example of how to add your own to nodefetch. It looks like so:
 
 ```json
 {
@@ -97,20 +106,14 @@ This is my first NPM module so I'm still learning, but the most pressing TODOs a
 * Make it work for zips - so you could pull down packages like CodeIgniter, HTML5 BoilerPlate and so on.
 * Update the default `package.json` to contain loads more.
 
-```javascript
-test.testSomeFunc = function() {
-  assert.equal(1, 1);
-};
-```
-
-* The test use Node's assert library.
-
-
 
 Any questions, feel free to ask :)
 
 
 ## Changelog
+
+#####V0.1.1
+* settings now stored as `.nodefetch.json` (period at the beginning).
 
 #####V0.1.0
 Big enough changes to warrant the step up to 0.1.0
