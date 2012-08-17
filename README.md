@@ -113,7 +113,7 @@ Any questions, feel free to ask :)
 ## Changelog
 
 #####V0.1.1
-* settings now stored as `.nodefetch.json` (period at the beginning).
+* settings now stored as `.nodefetch.json` (period at the beginning). Fixes #3 (thanks @mheap)
 
 #####V0.1.0
 Big enough changes to warrant the step up to 0.1.0
