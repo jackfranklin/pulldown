@@ -70,6 +70,29 @@ nodefetch jquery:jquery.js backbone underscore:u.js
 
 That will download jQuery into `jquery.js`, download Backbone to a file named the same as the file on the server, and Underscore to `u.js`.
 
+__NEW__ you can also download zip files. Twitter's bootstrap library is included in the initial `.nodefetch.json` file.
+
+```
+nodefetch bootstrap
+```
+
+Will unzip bootstrap into `/bootstrap` and give you all the files in their proper structure.
+
+```
+.
+├── css
+│   ├── bootstrap-responsive.css
+│   ├── bootstrap-responsive.min.css
+│   ├── bootstrap.css
+│   └── bootstrap.min.css
+├── img
+│   ├── glyphicons-halflings-white.png
+│   └── glyphicons-halflings.png
+└── js
+    ├── bootstrap.js
+    └── bootstrap.min.js
+```
+
 
 ## Contributing
 

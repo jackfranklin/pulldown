@@ -17,7 +17,7 @@ reset = '\033[0m';
 
 
 var nodefetch = {
-  VERSION: "0.1.1",
+  VERSION: "0.2.0",
   packages: {},
   userHome: function() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
