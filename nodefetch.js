@@ -4,7 +4,8 @@
 var url = require('url');
 var fs = require('fs');
 var request = require('request');
-
+var unzip = require('unzip');
+var shell = require('shelljs');
 var isTest = false;
 
 //terminal output colours!
@@ -43,7 +44,11 @@ var nodefetch = {
   },
   readPackagesFromSettings: function() {
     if(Object.keys(this.packages).length > 0) return this.packages;
-    this.packages = JSON.parse(fs.readFileSync(this.userHome() + '/.nodefetch.json').toString());
+    try {
+      this.packages = JSON.parse(fs.readFileSync(this.userHome() + '/.nodefetch.json').toString());
+    } catch (e) {
+      throw new Error("Invalid JSON");
+    }
     return this.packages;
   },
   updateSettings: function() { this.packages = {}; },
@@ -66,13 +71,48 @@ var nodefetch = {
     };
   },
   getFile: function(fileUrl, output, cb) {
-    request(fileUrl, function(err, resp, body) {
-      if(err) throw err;
-      fs.writeFile(output, body, function(err) {
-        if(err) throw err;
-        if(!isTest) console.log("-> " + green + "SUCCESS: " + fileUrl + " has been written to " + output, reset);
+    var self = this;
+    var splitUrl = fileUrl.split(".");
+    var isZip = !!(splitUrl[splitUrl.length-1] === "zip");
+    var requestOpts;
+    if(isZip) {
+      requestOpts = {
+        uri: fileUrl,
+        encoding: null
+      };
+    } else {
+      requestOpts = fileUrl;
+    }
+    request(requestOpts).pipe(fs.createWriteStream(output).on("close", function() {
+      if(!isTest) console.log("-> " + green + "SUCCESS: " + fileUrl + " has been written to " + output, reset);
+      if(isZip) {
+        self.extractZip(output, cb);
+      } else {
         (cb && typeof cb == "function" && cb());
-      });
+      }
+    }));
+    //request(requestOpts, function(err, resp, body) {
+      //if(err) throw err;
+      //fs.writeFile(output, body, function(err) {
+        //if(err) throw err;
+        //if(!isTest) console.log("-> " + green + "SUCCESS: " + fileUrl + " has been written to " + output, reset);
+        //if(isZip) {
+          //var path = output.split(".")[0];
+          //self.extractZip(output, path, cb);
+          ////self.extractZip(output, cb);
+          //return;
+        //} else {
+          //(cb && typeof cb == "function" && cb());
+        //};
+      //});
+    //});
+  },
+  extractZip: function(fileName, cb) {
+    var output = fileName.split(".")[0];
+    fs.createReadStream(fileName).pipe(unzip.Extract({ path: './' })).on("close", function() {
+      shell.rm(fileName);
+      if(!isTest) console.log("-> " + green + "SUCCESS: " + fileName + " has been unzipped to /" + output, reset);
+      (cb && typeof cb == "function" && cb());
     });
   }
 };
