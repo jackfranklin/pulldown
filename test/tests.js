@@ -30,6 +30,7 @@ MTW.addTest("getSettings", function() {
 
 MTW.addTest("readPackagesFromSettings", function() {
   nodefetch.getSettingsFile(function() {
+    assert.equal(nodefetch.settingsFileExists(), true);
     var packages = nodefetch.readPackagesFromSettings();
     assert.equal(packages['jquery'], 'http://code.jquery.com/jquery.min.js');
     assert.equal(packages['reset'], 'http://meyerweb.com/eric/tools/css/reset/reset.css');
@@ -69,20 +70,15 @@ MTW.addTest("getFile", function() {
     nodefetch.getFile(parsed2.url, parsed2.output, function() {
       assert.ok(shell.test("-f", parsed2.output));
     });
-  });
-});
-
-MTW.addTest("extractingZip", function() {
-  nodefetch.getSettingsFile(function() {
-    nodefetch.readPackagesFromSettings();
-    var parsed = nodefetch.parsePackageArgument("bootstrap");
-    nodefetch.getFile(parsed.url, parsed.output, function() {
-      nodefetch.extractZip(parsed.output, function() {
-        assert.ok(shell.test("-d", parsed.output.split(".")[0]), true);
+    var parsed3 = nodefetch.parsePackageArgument("bootstrap");
+    nodefetch.getFile(parsed3.url, parsed3.output, function() {
+      nodefetch.extractZip(parsed3.output, function() {
+        assert.ok(shell.test("-d", parsed3.output.split(".")[0]));
       });
     });
   });
 });
+
 
 MTW.beforeEach(function() {
   shell.test("-f", ".nodefetch.json") && shell.rm(".nodefetch.json");
