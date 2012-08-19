@@ -112,6 +112,11 @@ Any questions, feel free to ask :)
 
 ## Changelog
 
+#####V0.2.0
+* nodefetch can now deal with zips!
+* Twitter's bootstrap is in the default settings file, running `nodefetch bootstrap` will extract to `/bootstrap`. Either add the bootstrap to your `.nodefetch.json`, or remove it and run any `nodefetch` command to download the new default.
+* I also rewrote the file downloading to be a bit tidier with one less callback.
+
 #####V0.1.1
 * settings now stored as `.nodefetch.json` (period at the beginning). Fixes #3 (thanks @mheap)
 
