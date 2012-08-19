@@ -85,27 +85,12 @@ var nodefetch = {
     }
     request(requestOpts).pipe(fs.createWriteStream(output).on("close", function() {
       if(!isTest) console.log("-> " + green + "SUCCESS: " + fileUrl + " has been written to " + output, reset);
-      if(isZip) {
+      if(isZip && !isTest) {
         self.extractZip(output, cb);
       } else {
         (cb && typeof cb == "function" && cb());
       }
     }));
-    //request(requestOpts, function(err, resp, body) {
-      //if(err) throw err;
-      //fs.writeFile(output, body, function(err) {
-        //if(err) throw err;
-        //if(!isTest) console.log("-> " + green + "SUCCESS: " + fileUrl + " has been written to " + output, reset);
-        //if(isZip) {
-          //var path = output.split(".")[0];
-          //self.extractZip(output, path, cb);
-          ////self.extractZip(output, cb);
-          //return;
-        //} else {
-          //(cb && typeof cb == "function" && cb());
-        //};
-      //});
-    //});
   },
   extractZip: function(fileName, cb) {
     var output = fileName.split(".")[0];

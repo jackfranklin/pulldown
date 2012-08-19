@@ -72,8 +72,20 @@ MTW.addTest("getFile", function() {
   });
 });
 
+MTW.addTest("extractingZip", function() {
+  nodefetch.getSettingsFile(function() {
+    nodefetch.readPackagesFromSettings();
+    var parsed = nodefetch.parsePackageArgument("bootstrap");
+    nodefetch.getFile(parsed.url, parsed.output, function() {
+      nodefetch.extractZip(parsed.output, function() {
+        assert.ok(shell.test("-d", parsed.output.split(".")[0]), true);
+      });
+    });
+  });
+});
+
 MTW.beforeEach(function() {
-  shell.test("-f", "nodefetch.json") && shell.rm("nodefetch.json");
+  shell.test("-f", ".nodefetch.json") && shell.rm(".nodefetch.json");
 });
 
 
