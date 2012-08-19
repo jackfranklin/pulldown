@@ -123,12 +123,8 @@ MTW.addTest("description", function() {
 
 This is my first NPM module so I'm still learning, but the most pressing TODOs are:
 
-* Move `nodefetch.json` into the package for nodefetch so I can simply update the default one through Github.
 * Improve error handling
-* Rewrite to use [CommanderJS](https://github.com/visionmedia/commander.js) for better CLI.
-* Make it work for zips - so you could pull down packages like CodeIgniter, HTML5 BoilerPlate and so on.
-* Update the default `package.json` to contain loads more.
-
+* Beef up the initial `.nodefetch.json` file with much more packages in.
 
 Any questions, feel free to ask :)
 
