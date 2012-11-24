@@ -44,7 +44,11 @@ The first time you run nodefetch it will pull down a sample JSON file, `nodefetc
   "json2": "https://github.com/douglascrockford/JSON-js/raw/master/json2.js",
   "normalize": "https://raw.github.com/necolas/normalize.css/master/normalize.css",
   "raphael": "http://github.com/DmitryBaranovskiy/raphael/raw/master/raphael-min.js",
-  "reset": "http://meyerweb.com/eric/tools/css/reset/reset.css"
+  "reset": "http://meyerweb.com/eric/tools/css/reset/reset.css",
+  "bootstrap": "http://twitter.github.com/bootstrap/assets/bootstrap.zip",
+  "sets": {
+    "backboneapp": ["backbone", "jquery", "underscore"]
+  }
 }
 ```
 
@@ -56,7 +60,21 @@ Once that's done, downloading jQuery is as simple as:
 nodefetch jquery
 ```
 
-__NEW__ you can pass in multiple libraries to download them all at once:
+You can also define and download sets (see JSON above). Then you can run:
+
+```
+nodefetch set:backboneapp
+```
+
+And it will download jQuery, Backbone and Underscore. You can also define filenames you'd like within a set. For example:
+
+```json
+"backboneapp": ["backbone:b.js", "jquery:j.js", "underscore:u.js"]
+```
+
+Running `nodefetch set:backboneapp` would download Backbone to b.js, jQuery to j.js, and Underscore to u.js.
+
+You can also pass in multiple libraries to download at once:
 
 ```
 nodefetch jquery underscore backbone
@@ -70,7 +88,7 @@ nodefetch jquery:jquery.js backbone underscore:u.js
 
 That will download jQuery into `jquery.js`, download Backbone to a file named the same as the file on the server, and Underscore to `u.js`.
 
-__NEW__ you can also download zip files. Twitter's bootstrap library is included in the initial `.nodefetch.json` file.
+You can also download zip files. Twitter's bootstrap library is included in the initial `.nodefetch.json` file.
 
 ```
 nodefetch bootstrap
@@ -93,43 +111,11 @@ Will unzip bootstrap into `/bootstrap` and give you all the files in their prope
     └── bootstrap.min.js
 ```
 
-
-## Contributing
-
-The WIP branch is the __develop__ branch, so any contributors should:
-
-* Fork the repository
-* work on the __develop__ branch
-* when you're ready to make a pull request, merge master INTO your develop branch
-* make the pull request to merge your develop branch into master
-* make sure you have tests for the added functionality and all tests pass!
-
-
-## Testing
-
-* The tests are within the `test/` folder. To run them, simply run: `node tests` from within the test folder, or `node test/tests` from the project root.
-
-* All test downloads go into `test/testdls`. This folder is cleaned before each run of the tests. It's also added to the `.gitignore`.
-
-* The test use Node's `assert`, but wrapped with my [minitestwrap](https://github.com/jackfranklin/node-minitestwrap) library. To add a new test, simply do:
-
-```javascript
-MTW.addTest("description", function() {
-  //assertions here
-});
-```
-
-## Todo
-
-This is my first NPM module so I'm still learning, but the most pressing TODOs are:
-
-* Improve error handling
-* Beef up the initial `.nodefetch.json` file with much more packages in.
-
-Any questions, feel free to ask :)
-
-
 ## Changelog
+
+#####V0.3.0
+* added sets functionality
+* updated `.nodefetch.json` file, to use the one from [my Dotfiles](https://github.com/jackfranklin/dotfiles/) as the default.
 
 #####V0.2.0
 * nodefetch can now deal with zips!

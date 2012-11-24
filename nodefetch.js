@@ -36,7 +36,7 @@ var nodefetch = {
       (cb && typeof cb == "function" && cb());
       return;
     }
-    var url = "http://jackfranklin.org/nodefetch.json";
+    var url = "https://raw.github.com/jackfranklin/dotfiles/master/.nodefetch.json";
     if(!isTest) console.log("-> " + red + "No settings file detected.", reset, "Downloading default from " + url);
     this.getFile(url, this.userHome() + "/.nodefetch.json", function() {
       (cb && typeof cb == "function" && cb());
@@ -47,7 +47,7 @@ var nodefetch = {
     try {
       this.packages = JSON.parse(fs.readFileSync(this.userHome() + '/.nodefetch.json').toString());
     } catch (e) {
-      throw new Error("Invalid JSON");
+      throw new Error("Invalid JSON", e);
     }
     return this.packages;
   },
@@ -56,19 +56,39 @@ var nodefetch = {
     var userArgs = process.argv.slice(2); //remove first two to get at the user commands
     for(var i = 0; i < userArgs.length; i++) {
       var argResponse = this.parsePackageArgument(userArgs[i])
-      this.getFile(argResponse.url, argResponse.output);
+      if(argResponse.packages) {
+        for(var j = 0; j < argResponse.packages.length; j++) {
+          this.getFile(argResponse.packages[j].url, argResponse.packages[j].output);
+        }
+      } else {
+        this.getFile(argResponse.url, argResponse.output);
+      }
     }
   },
   parsePackageArgument: function(arg) {
     var args = arg.split(":");
-    var fileUrl = this.packages[args[0]];
-    if(!fileUrl) {
-      throw new Error(red + " ERROR " + args[0] + " does not exist" + reset);
+
+    if(args[0] === "set") {
+      if(!isTest) console.log("-> " + green + "Downloading set", args[1], reset);
+      // a set of packages
+      var packages = this.packages.sets[args[1]];
+      var response = [];
+      for(var i = 0; i < packages.length; i++) {
+        response.push(this.parsePackageArgument(packages[i]));
+      }
+      return { packages: response };
+    } else {
+      // just a regular package
+      var fileUrl = this.packages[args[0]];
+      if(!fileUrl) {
+        throw new Error(red + " ERROR " + args[0] + " does not exist" + reset);
+      }
+
+      return {
+        url: fileUrl,
+        output: args[1] || url.parse(fileUrl).pathname.split('/').pop()
+      };
     }
-    return {
-      url: fileUrl,
-      output: args[1] || url.parse(fileUrl).pathname.split('/').pop()
-    };
   },
   getFile: function(fileUrl, output, cb) {
     var self = this;
