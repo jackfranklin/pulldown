@@ -1,10 +1,10 @@
 {
-  "name": "nodefetch",
-  "version": "0.4.0",
+  "name": "pulldown",
+  "version": "0.1.0",
   "description": "Fetch popular web libraries from the net",
   "preferGlobal": "true",
   "bin": {
-    "nodefetch": "nodefetch.js"
+    "pulldown": "pulldown.js"
   },
   "author": "Jack Franklin",
   "engines": {
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:jackfranklin/nodefetch.git"
+    "url": "git@github.com:jackfranklin/pulldown.git"
   },
   "dependencies": {
     "request": "~2.10.0",

@@ -16,14 +16,14 @@ green = '\033[32m';
 reset = '\033[0m';
 
 
-var nodefetch = {
-  VERSION: "0.2.0",
+var pulldown = {
+  VERSION: "0.1.0",
   packages: {},
   userHome: function() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
   },
   getLocalFileJson: function() {
-    var file = JSON.parse(fs.readFileSync(".nodefetchrc").toString());
+    var file = JSON.parse(fs.readFileSync(".pulldownrc").toString());
     try {
     } catch(e) {
       return false;
@@ -32,7 +32,7 @@ var nodefetch = {
   },
   settingsFileExists: function() {
     try {
-      fs.lstatSync(this.userHome() + '/.nodefetch.json');
+      fs.lstatSync(this.userHome() + '/.pulldown.json');
     } catch(e) {
       return false;
     }
@@ -44,16 +44,16 @@ var nodefetch = {
       (cb && typeof cb == "function" && cb());
       return;
     }
-    var url = "https://raw.github.com/jackfranklin/dotfiles/master/.nodefetch.json";
+    var url = "https://raw.github.com/jackfranklin/dotfiles/master/.pulldown.json";
     if(!isTest) console.log("-> " + red + "No settings file detected.", reset, "Downloading default from " + url);
-    this.getFile(url, this.userHome() + "/.nodefetch.json", function() {
+    this.getFile(url, this.userHome() + "/.pulldown.json", function() {
       (cb && typeof cb == "function" && cb());
     });
   },
   readPackagesFromSettings: function() {
     if(Object.keys(this.packages).length > 0) return this.packages;
     try {
-      this.packages = JSON.parse(fs.readFileSync(this.userHome() + '/.nodefetch.json').toString());
+      this.packages = JSON.parse(fs.readFileSync(this.userHome() + '/.pulldown.json').toString());
     } catch (e) {
       throw new Error("Invalid JSON", e);
     }
@@ -77,14 +77,14 @@ var nodefetch = {
       // check for a local file and download from that
       var local = this.getLocalFileJson();
       if(local) {
-        if(!isTest) console.log("-> " + green + "Found local .nodefetchrc to download dependencies from", reset);
+        if(!isTest) console.log("-> " + green + "Found local .pulldownrc to download dependencies from", reset);
         for(var i = 0; i < local.dependencies.length; i++) {
           var nextDep = local.dependencies[i];
           if(nextDep.indexOf("http") > -1) {
             if(!isTest) console.log("-> " + "Downloading URL dependency: " + nextDep, reset);
             this.getFile(nextDep, (local.destination ? local.destination + "/" : "") + url.parse(nextDep).pathname.split('/').pop());
           } else {
-            if(!isTest) console.log("-> " + "Downloading dependency: " + nextDep + " from ~/.nodefetch.json", reset);
+            if(!isTest) console.log("-> " + "Downloading dependency: " + nextDep + " from ~/.pulldown.json", reset);
             var argResponse = this.parsePackageArgument(local.dependencies[i]);
             this.getFile(argResponse.url, (local.destination ? local.destination + "/" : "") + argResponse.output);
           }
@@ -151,44 +151,36 @@ var nodefetch = {
 
 //help
 if(process.argv[2] == "--help") {
-  console.log("-> VERSION", nodefetch.VERSION);
-  console.log("-> nodefetch help");
-  console.log("-> To upgrade to latest version: npm update nodefetch -g");
+  console.log("-> VERSION", pulldown.VERSION);
+  console.log("-> pulldown help");
+  console.log("-> To upgrade to latest version: npm update pulldown -g");
   console.log("");
-  console.log("-> USAGE: 'nodefetch package_name [file_name]'");
+  console.log("-> USAGE: 'pulldown package_name [file_name]'");
   console.log("");
   console.log("-> BASIC USAGE");
-  console.log("---> when you first run nodefetch, a package.json file will be downloaded to ~/.nodefetch.json.");
+  console.log("---> when you first run pulldown, a package.json file will be downloaded to ~/.pulldown.json.");
   console.log("---> This file contains a list of packages, which you can edit as you please");
-  console.log("---> once you have this package.json, to install a library, type 'nodefetch' followed by the library name.");
-  console.log("---> for example: 'nodefetch jquery' will install the latest jQuery");
-  console.log("---> download multiple libraries at once: 'nodefetch jquery backbone underscore'");
+  console.log("---> once you have this package.json, to install a library, type 'pulldown' followed by the library name.");
+  console.log("---> for example: 'pulldown jquery' will install the latest jQuery");
+  console.log("---> download multiple libraries at once: 'pulldown jquery backbone underscore'");
   console.log("");
   console.log("-> FURTHER OPTIONS");
   console.log("---> if you want to store the library to different filename than the one that it's called on the server");
   console.log("---> you can pass in an optional filename with the library name, colon separated");
-  console.log("---> for example, 'nodefetch jquery:foo.js' will download jQuery into foo.js");
-  console.log("---> 'nodefetch jquery:foo.js backbone underscore:u.js' downloads jQuery to foo.js, Backbone to default and Underscore to u.js");
+  console.log("---> for example, 'pulldown jquery:foo.js' will download jQuery into foo.js");
+  console.log("---> 'pulldown jquery:foo.js backbone underscore:u.js' downloads jQuery to foo.js, Backbone to default and Underscore to u.js");
   console.log("");
-  console.log("-> any feedback, help or issues, please report them on Github: https://github.com/jackfranklin/nodefetch/");
+  console.log("-> any feedback, help or issues, please report them on Github: https://github.com/jackfranklin/pulldown/");
   console.log("");
   process.exit(1);
 }
 
 
 //check if we are in test mode
-if(!(process.argv[1].indexOf("nodefetch/test/tests") > -1)) {
-  nodefetch.getSettingsFile(function() {
-    nodefetch.readPackagesFromSettings();
-    nodefetch.processUserArgs();
-  });
-} else {
-  isTest = true;
-}
+pulldown.getSettingsFile(function() {
+  pulldown.readPackagesFromSettings();
+  pulldown.processUserArgs();
+});
 
 //expose (mainly for testing)
-module.exports = nodefetch;
-
-/*
- * TODO: check on Windows
- */
+module.exports = pulldown;
