@@ -1,4 +1,6 @@
-#nodefetch
+# nodefetch
+
+The most minimal JS package manager on the web.
 
 One day I got fed up of going online to pull down the latest library I wanted, whether that be Backbone, jQuery, Underscore or a CSS library like Normalize.css. Of course great solutions like [JamJS](http://jamjs.org) exist for full blown package management but often I wanted something a bit easier, so I decided to test my Node skills and create a command line tool to do just that. The result is nodefetch.
 
@@ -9,7 +11,6 @@ You need to have Node JS and NPM installed.
 At this time nodefetch has only been tested on Mac OS X Lion. If you run any other OS, please let me know if nodefetch works or not.
 
 ## Installation
-
 
 ```
 npm install -g nodefetch
@@ -32,23 +33,25 @@ npm update nodefetch -g
 
 ## Usage
 
-__NEW__: file is stored in home dir as `.nodefetch.json` (notice the starting period)
-
 The first time you run nodefetch it will pull down a sample JSON file, `nodefetch.json` into your home directory as `.nodefetch.json`. This file contains libraries and acts also as an example of how to add your own to nodefetch. It looks like so:
 
 ```json
 {
   "backbone" : "http://backbonejs.org/backbone-min.js",
-  "underscore" : "http://underscorejs.org/underscore-min.js",
-  "jquery": "http://code.jquery.com/jquery.min.js",
-  "json2": "https://github.com/douglascrockford/JSON-js/raw/master/json2.js",
-  "normalize": "https://raw.github.com/necolas/normalize.css/master/normalize.css",
-  "raphael": "http://github.com/DmitryBaranovskiy/raphael/raw/master/raphael-min.js",
-  "reset": "http://meyerweb.com/eric/tools/css/reset/reset.css",
-  "bootstrap": "http://twitter.github.com/bootstrap/assets/bootstrap.zip",
-  "sets": {
-    "backboneapp": ["backbone", "jquery", "underscore"]
-  }
+    "underscore" : "http://underscorejs.org/underscore-min.js",
+    "jquery": "http://code.jquery.com/jquery.min.js",
+    "json2": "https://github.com/douglascrockford/JSON-js/raw/master/json2.js",
+    "normalize": "https://raw.github.com/necolas/normalize.css/master/normalize.css",
+    "raphael": "http://github.com/DmitryBaranovskiy/raphael/raw/master/raphael-min.js",
+    "reset": "http://meyerweb.com/eric/tools/css/reset/reset.css",
+    "bootstrap": "http://twitter.github.com/bootstrap/assets/bootstrap.zip",
+    "sets": {
+      "backboneapp": ["backbone", "jquery", "underscore"]
+    },
+    "requirejs": "http://requirejs.org/docs/release/2.1.2/minified/require.js",
+    "handlebars": "https://raw.github.com/wycats/handlebars.js/master/dist/handlebars.js",
+    "magnacharta": "https://raw.github.com/alphagov/magna-charta/master/dist/magna-charta.min.js",
+    "matchmedia": "https://raw.github.com/paulirish/matchMedia.js/master/matchMedia.js"
 }
 ```
 
@@ -88,6 +91,12 @@ nodefetch jquery:jquery.js backbone underscore:u.js
 
 That will download jQuery into `jquery.js`, download Backbone to a file named the same as the file on the server, and Underscore to `u.js`.
 
+You can also add directories to the custom file path:
+
+```
+nodefetch jquery:lib/jquery.js
+```
+
 You can also download zip files. Twitter's bootstrap library is included in the initial `.nodefetch.json` file.
 
 ```
@@ -111,7 +120,28 @@ Will unzip bootstrap into `/bootstrap` and give you all the files in their prope
     └── bootstrap.min.js
 ```
 
+
+### nodefetchrc
+
+You can store dependencies within a local `.nodefetchrc` file within your project. It looks something like this:
+
+```
+{
+  "destination": "lib",
+  "dependencies": [
+    "jquery",
+    "requirejs",
+    "handlebars"
+  ]
+}
+```
+
+Then when you run `nodefetch` (without any arguments) within a directory that contains that file, it will download the dependencies for you.
+
 ## Changelog
+
+#####V0.4.0
+* added functionality to have a local `.nodefetchrc` file to download packages automatically
 
 #####V0.3.0
 * added sets functionality

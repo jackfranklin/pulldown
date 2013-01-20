@@ -22,6 +22,14 @@ var nodefetch = {
   userHome: function() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
   },
+  getLocalFileJson: function() {
+    var file = JSON.parse(fs.readFileSync(".nodefetchrc").toString());
+    try {
+    } catch(e) {
+      return false;
+    }
+    return file;
+  },
   settingsFileExists: function() {
     try {
       fs.lstatSync(this.userHome() + '/.nodefetch.json');
@@ -54,14 +62,25 @@ var nodefetch = {
   updateSettings: function() { this.packages = {}; },
   processUserArgs: function() {
     var userArgs = process.argv.slice(2); //remove first two to get at the user commands
-    for(var i = 0; i < userArgs.length; i++) {
-      var argResponse = this.parsePackageArgument(userArgs[i])
-      if(argResponse.packages) {
-        for(var j = 0; j < argResponse.packages.length; j++) {
-          this.getFile(argResponse.packages[j].url, argResponse.packages[j].output);
+    if(userArgs.length) {
+      for(var i = 0; i < userArgs.length; i++) {
+        var argResponse = this.parsePackageArgument(userArgs[i])
+        if(argResponse.packages) {
+          for(var j = 0; j < argResponse.packages.length; j++) {
+            this.getFile(argResponse.packages[j].url, argResponse.packages[j].output);
+          }
+        } else {
+          this.getFile(argResponse.url, argResponse.output);
         }
-      } else {
-        this.getFile(argResponse.url, argResponse.output);
+      }
+    } else {
+      // check for a local file and download from that
+      var local = this.getLocalFileJson();
+      if(local) {
+        for(var i = 0; i < local.dependencies.length; i++) {
+          var argResponse = this.parsePackageArgument(local.dependencies[i]);
+          this.getFile(argResponse.url, (local.destination ? local.destination + "/" : "") + argResponse.output);
+        }
       }
     }
   },
