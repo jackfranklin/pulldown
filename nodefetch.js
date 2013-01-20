@@ -77,9 +77,17 @@ var nodefetch = {
       // check for a local file and download from that
       var local = this.getLocalFileJson();
       if(local) {
+        if(!isTest) console.log("-> " + green + "Found local .nodefetchrc to download dependencies from", reset);
         for(var i = 0; i < local.dependencies.length; i++) {
-          var argResponse = this.parsePackageArgument(local.dependencies[i]);
-          this.getFile(argResponse.url, (local.destination ? local.destination + "/" : "") + argResponse.output);
+          var nextDep = local.dependencies[i];
+          if(nextDep.indexOf("http") > -1) {
+            if(!isTest) console.log("-> " + "Downloading URL dependency: " + nextDep, reset);
+            this.getFile(nextDep, (local.destination ? local.destination + "/" : "") + url.parse(nextDep).pathname.split('/').pop());
+          } else {
+            if(!isTest) console.log("-> " + "Downloading dependency: " + nextDep + " from ~/.nodefetch.json", reset);
+            var argResponse = this.parsePackageArgument(local.dependencies[i]);
+            this.getFile(argResponse.url, (local.destination ? local.destination + "/" : "") + argResponse.output);
+          }
         }
       }
     }
