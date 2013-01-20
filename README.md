@@ -140,6 +140,15 @@ The dependencies array can contain either names or URLs. If it contains a name (
 
 Then when you run `pulldown` (without any arguments) within a directory that contains a `.pulldownrc`, it will download the dependencies for you.
 
+## FAQs
+
+##### Why write another package manager?
+pulldown does one thing and one thing well. You give it  list of URLs (or names that it knows about), and it downloads the raw JS files. Nothing more.
+
+##### Does it do versions?
+It does, in that you can link to a specific version of a library. However it does nothing more. This is because it was designed purely to download JS files.
+
+
 ## Changelog
 
 __V0.1.0__
