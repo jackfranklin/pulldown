@@ -142,6 +142,9 @@ Then when you run `pulldown` (without any arguments) within a directory that con
 
 ## Changelog
 
+__V0.1.1__
+- if you try to install something to a folder that doesn't exist, pulldown will now create it
+
 __V0.1.0__
 - initial release!
 - this is a rewrite and rework of the old `nodefetch` module, with a better name.

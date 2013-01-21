@@ -17,7 +17,7 @@ reset = '\033[0m';
 
 
 var pulldown = {
-  VERSION: "0.1.0",
+  VERSION: "0.1.1",
   packages: {},
   userHome: function() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -121,6 +121,11 @@ var pulldown = {
     var self = this;
     var splitUrl = fileUrl.split(".");
     var isZip = !!(splitUrl[splitUrl.length-1] === "zip");
+    var slashOutput = output.split("/");
+    slashOutput.pop();
+    // make sure the folder exists
+    shell.mkdir('-p', slashOutput.join("/"));
+
     var requestOpts;
     if(isZip) {
       requestOpts = {
