@@ -17,7 +17,7 @@ reset = '\033[0m';
 
 
 var pulldown = {
-  VERSION: "0.1.1",
+  VERSION: "0.1.2",
   packages: {},
   userHome: function() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -80,13 +80,15 @@ var pulldown = {
         if(!isTest) console.log("-> " + green + "Found local .pulldownrc to download dependencies from", reset);
         for(var i = 0; i < local.dependencies.length; i++) {
           var nextDep = local.dependencies[i];
-          if(nextDep.indexOf("http") > -1) {
-            if(!isTest) console.log("-> " + "Downloading URL dependency: " + nextDep, reset);
-            this.getFile(nextDep, (local.destination ? local.destination + "/" : "") + url.parse(nextDep).pathname.split('/').pop());
+          if(nextDep.source.indexOf("http") > -1) {
+            if(!isTest) console.log("-> " + "Downloading URL dependency: " + nextDep.source, reset);
+            output = ( nextDep.output === undefined ? url.parse(nextDep.source).pathname.split('/').pop() : nextDep.output);
+            console.log(output);
+            this.getFile(nextDep.source, (local.destination ? local.destination + "/" : "") + output);
           } else {
-            if(!isTest) console.log("-> " + "Downloading dependency: " + nextDep + " from ~/.pulldown.json", reset);
-            var argResponse = this.parsePackageArgument(local.dependencies[i]);
-            this.getFile(argResponse.url, (local.destination ? local.destination + "/" : "") + argResponse.output);
+            if(!isTest) console.log("-> " + "Downloading dependency: " + nextDep.source + " from ~/.pulldown.json", reset);
+            var argResponse = this.parsePackageArgument(local.dependencies[i].source);
+            this.getFile(argResponse.url, (local.destination ? local.destination + "/" : "") + nextDep.output || argResponse.output);
           }
         }
       }
@@ -124,7 +126,9 @@ var pulldown = {
     var slashOutput = output.split("/");
     slashOutput.pop();
     // make sure the folder exists
-    shell.mkdir('-p', slashOutput.join("/"));
+    if(slashOutput.length > 0) {
+      shell.mkdir('-p', slashOutput.join("/"));
+    }
 
     var requestOpts;
     if(isZip) {

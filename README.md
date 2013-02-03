@@ -126,11 +126,16 @@ You can store dependencies within a local `.pulldownrc` file within your project
 
 ```
 {
-  "destination": "lib",
-  "dependencies": [
-    "jquery",
-    "https://raw.github.com/wycats/handlebars.js/master/dist/handlebars.js"
-  ]
+    "destination": "vendors",
+    "dependencies": [
+        {
+          "source": "jquery",
+          "output": "jquery.js"
+        },
+        {
+          "source": "https://raw.github.com/wycats/handlebars.js/1.0.rc.2/dist/handlebars.js"
+        }
+    ]
 }
 ```
 
@@ -138,7 +143,7 @@ If you want the files to be downloaded to the same directory as the `.pulldownrc
 
 The dependencies array can contain either names or URLs. If it contains a name (such as "jquery"), it will look in your `~/.pulldown.json` to find the URL. If the string is a URL, it will download it.
 
-Then when you run `pulldown` (without any arguments) within a directory that contains a `.pulldownrc`, it will download the dependencies for you.
+Then when you run `pulldown` (without any arguments) within a directory that contains a `.pulldownrc`, it will download the dependencies for you. If you don't define the `output` property for a dependency, pulldown will use the one in the source. For example, with the above handlebars dependency, it will be saved as `handlebars.js`.
 
 ## FAQs
 
@@ -150,6 +155,10 @@ It does, in that you can link to a specific version of a library. However it doe
 
 
 ## Changelog
+
+__V0.1.2__
+- updated structure of `.pulldownrc` to allow for specifying the file name
+- fix `mkdir` showing error if no directory given
 
 __V0.1.1__
 - if you try to install something to a folder that doesn't exist, pulldown will now create it
