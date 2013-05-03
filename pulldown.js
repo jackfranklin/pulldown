@@ -1,4 +1,4 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 
 //some dependencies
 var url = require('url');
@@ -24,8 +24,9 @@ var pulldown = {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
   },
   getLocalFileJson: function() {
-    var file = JSON.parse(fs.readFileSync(".pulldownrc").toString());
+    var file;
     try {
+      file = JSON.parse(fs.readFileSync(".pulldownrc").toString());
     } catch(e) {
       return false;
     }
