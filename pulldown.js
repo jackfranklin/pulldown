@@ -1,4 +1,4 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 
 //some dependencies
 var url = require('url');
@@ -7,6 +7,7 @@ var request = require('request');
 var unzip = require('unzip');
 var shell = require('shelljs');
 var isTest = false;
+var pkg = require('./package.json');
 
 //terminal output colours!
 //via http://roguejs.com/2011-11-30/console-colors-in-node-js/
@@ -17,14 +18,15 @@ reset = '\033[0m';
 
 
 var pulldown = {
-  VERSION: "0.1.2",
+  VERSION: pkg.version,
   packages: {},
   userHome: function() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
   },
   getLocalFileJson: function() {
-    var file = JSON.parse(fs.readFileSync(".pulldownrc").toString());
+    var file;
     try {
+      file = JSON.parse(fs.readFileSync(".pulldownrc").toString());
     } catch(e) {
       return false;
     }
