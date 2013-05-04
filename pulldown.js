@@ -6,7 +6,6 @@ var fs = require('fs');
 var request = require('request');
 var unzip = require('unzip');
 var shell = require('shelljs');
-var isTest = false;
 var pkg = require('./package.json');
 
 //terminal output colours!
@@ -42,12 +41,12 @@ var pulldown = {
   },
   getSettingsFile: function(cb) {
     if(this.settingsFileExists()) {
-      if(!isTest) console.log("-> " + green + "Settings file found", reset);
+      console.log("-> " + green + "Settings file found", reset);
       (cb && typeof cb == "function" && cb());
       return;
     }
     var url = "https://raw.github.com/jackfranklin/dotfiles/master/.pulldown.json";
-    if(!isTest) console.log("-> " + red + "No settings file detected.", reset, "Downloading default from " + url);
+    console.log("-> " + red + "No settings file detected.", reset, "Downloading default from " + url);
     this.getFile(url, this.userHome() + "/.pulldown.json", function() {
       (cb && typeof cb == "function" && cb());
     });
@@ -79,16 +78,16 @@ var pulldown = {
       // check for a local file and download from that
       var local = this.getLocalFileJson();
       if(local) {
-        if(!isTest) console.log("-> " + green + "Found local .pulldownrc to download dependencies from", reset);
+        console.log("-> " + green + "Found local .pulldownrc to download dependencies from", reset);
         for(var i = 0; i < local.dependencies.length; i++) {
           var nextDep = local.dependencies[i];
           if(nextDep.source.indexOf("http") > -1) {
-            if(!isTest) console.log("-> " + "Downloading URL dependency: " + nextDep.source, reset);
+            console.log("-> " + "Downloading URL dependency: " + nextDep.source, reset);
             output = ( nextDep.output === undefined ? url.parse(nextDep.source).pathname.split('/').pop() : nextDep.output);
             console.log(output);
             this.getFile(nextDep.source, (local.destination ? local.destination + "/" : "") + output);
           } else {
-            if(!isTest) console.log("-> " + "Downloading dependency: " + nextDep.source + " from ~/.pulldown.json", reset);
+            console.log("-> " + "Downloading dependency: " + nextDep.source + " from ~/.pulldown.json", reset);
             var argResponse = this.parsePackageArgument(local.dependencies[i].source);
             this.getFile(argResponse.url, (local.destination ? local.destination + "/" : "") + nextDep.output || argResponse.output);
           }
@@ -100,7 +99,7 @@ var pulldown = {
     var args = arg.split(":");
 
     if(args[0] === "set") {
-      if(!isTest) console.log("-> " + green + "Downloading set", args[1], reset);
+      console.log("-> " + green + "Downloading set", args[1], reset);
       // a set of packages
       var packages = this.packages.sets[args[1]];
       var response = [];
@@ -142,8 +141,8 @@ var pulldown = {
       requestOpts = fileUrl;
     }
     request(requestOpts).pipe(fs.createWriteStream(output).on("close", function() {
-      if(!isTest) console.log("-> " + green + "SUCCESS: " + fileUrl + " has been written to " + output, reset);
-      if(isZip && !isTest) {
+      console.log("-> " + green + "SUCCESS: " + fileUrl + " has been written to " + output, reset);
+      if(isZip) {
         self.extractZip(output, cb);
       } else {
         (cb && typeof cb == "function" && cb());
@@ -154,7 +153,7 @@ var pulldown = {
     var output = fileName.split(".")[0];
     fs.createReadStream(fileName).pipe(unzip.Extract({ path: './' })).on("close", function() {
       shell.rm(fileName);
-      if(!isTest) console.log("-> " + green + "SUCCESS: " + fileName + " has been unzipped to /" + output, reset);
+      console.log("-> " + green + "SUCCESS: " + fileName + " has been unzipped to /" + output, reset);
       (cb && typeof cb == "function" && cb());
     });
   }
@@ -192,6 +191,3 @@ pulldown.getSettingsFile(function() {
   pulldown.readPackagesFromSettings();
   pulldown.processUserArgs();
 });
-
-//expose (mainly for testing)
-module.exports = pulldown;
