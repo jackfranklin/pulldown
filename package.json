@@ -17,6 +17,7 @@
   "dependencies": {
     "request": "~2.10.0",
     "shelljs": "0.0.6",
-    "unzip": "0.0.3"
+    "unzip": "0.0.3",
+    "pulldown-resolve": "0.0.1"
   }
 }
