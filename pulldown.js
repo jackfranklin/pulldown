@@ -1,30 +1,25 @@
 #!/usr/bin/env node
 
 //some dependencies
-var URL = require('url');
-var fs = require('fs');
-var request = require('request');
-var shell = require('shelljs');
-var pkg = require('./package.json');
+var URL = require('url'),
+    fs = require('fs'),
+    request = require('request'),
+    shell = require('shelljs'),
+    pkg = require('./package.json'),
+    resolve = require("pulldown-resolve");
 
 //terminal output colours!
 //via http://roguejs.com/2011-11-30/console-colors-in-node-js/
-var red, green, reset;
-red   = '\033[31m';
-green = '\033[32m';
-reset = '\033[0m';
+var red   = '\033[31m',
+    green = '\033[32m',
+    reset = '\033[0m';
 
 var log = function(message, colour) {
-  if(colour) {
-    console.log("->", colour, message, reset);
-  } else {
-    console.log("->", message);
-  }
+  colour ? console.log("->", colour, message, reset) : console.log("->", message);
 };
 
 var isUrl = function(str) {
-  //TODO: proper url test
-  return str.indexOf("http") > -1;
+  return str.match(/\/\//);
 };
 
 var Pulldown = function() {
@@ -34,7 +29,6 @@ var Pulldown = function() {
 Pulldown.prototype.init = function() {
   this.localJson = this.getLocalJson();
   var res = this.processUserArgs();
-  console.log("res", res);
   this.downloadFiles();
 };
 
@@ -68,25 +62,16 @@ Pulldown.prototype.processUserArgs = function() {
 Pulldown.prototype.parsePackageArgument = function(searchTerm) {
   // look within ~/.pulldown.json first
   searchTerm = searchTerm.split(":")[0];
+  var resultUrls = [];
   // pulldown-resolve goes here
-  // else hit the CDN
-  var localResult = this.localJson[searchTerm];
-  var urls = [];
-  if(localResult) {
-    // resolve through pulldown-resolve
-    log("Found " + searchTerm + " in ~/.pulldown.json");
-    if(localResult instanceof Array) {
-      localResult.forEach(function(term) {
-        urls.push(this.findUrlForString(term));
-      }.bind(this));
-    } else {
-      urls.push(localResult);
-    }
+  var urls = resolve(searchTerm, this.localJson);
+  if(urls.length) {
+    resultUrls = resultUrls.concat(urls);
   } else {
-    // hit the CDN
-    urls.push(this.cdnUrl(searchTerm));
+    // else hit the CDN
+    resultUrls.push(this.cdnUrl(searchTerm));
   }
-  return urls;
+  return resultUrls;
 };
 
 Pulldown.prototype.cdnUrl = function(term) {
@@ -99,8 +84,10 @@ Pulldown.prototype.findUrlForString = function(arg) {
   // or a search term, in which case try to find the URL
   // first from local pulldown.json or CDN
   if(isUrl(arg)) return arg;
+
   var localRes = this.localJson[arg];
   if(localRes && isUrl(localRes)) return localRes;
+
   return this.cdnUrl(arg);
 };
 
