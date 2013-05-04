@@ -32,14 +32,10 @@ Pulldown.prototype.init = function() {
   this.downloadFiles();
 };
 
-Pulldown.prototype.HOME = function() {
-  return process.env["HOME"];
-};
-
 Pulldown.prototype.getLocalJson = function() {
   var file;
   try {
-    file = JSON.parse(fs.readFileSync(this.HOME() + "/.pulldown.json").toString());
+    file = JSON.parse(fs.readFileSync(process.env["HOME"] + "/.pulldown.json").toString());
   } catch(e) { file = {} };
   return file;
 };
