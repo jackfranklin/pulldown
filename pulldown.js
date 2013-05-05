@@ -9,7 +9,7 @@ var pkg = require('./package.json');
 var resolve = require("pulldown-resolve");
 var middleMan = require("pulldown-middle-man");
 var path = require("path");
-var inputArgs = require("optimist").argv;
+var optimist = require("optimist");
 
 //terminal output colours!
 //via http://roguejs.com/2011-11-30/console-colors-in-node-js/
@@ -30,6 +30,7 @@ var Pulldown = function() {
 };
 
 Pulldown.prototype.init = function(userArgs) {
+  var inputArgs = optimist.parse(userArgs);
   this.userArgs = inputArgs._;
   this.outputDir = inputArgs.o || inputArgs.output;
   if(this.outputDir) {
@@ -76,6 +77,9 @@ Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
       });
     }
   }, function(err, set) {
+    if(!set.length) {
+      log("Nothing found for " + searchTerm, red);
+    }
     set = set.map(function(item) {
       return item[0] === "/" ? "https:" + item : item;
     });
@@ -104,3 +108,6 @@ Pulldown.prototype.getFile = function(url, out) {
 // let's kick this thing off
 var pulldown = new Pulldown();
 pulldown.init(process.argv.slice(2));
+
+// export for testing
+module.exports = Pulldown;

@@ -6,6 +6,9 @@
   "bin": {
     "pulldown": "pulldown.js"
   },
+  "scripts": {
+    "test": "tap ./test"
+  },
   "author": "Jack Franklin",
   "engines": {
     "node": "*"
@@ -21,5 +24,7 @@
     "pulldown-resolve": "0.0.7",
     "pulldown-middle-man": "0.0.1",
     "optimist": "~0.4.0"
+  },
+  "devDependencies": {
   }
 }
