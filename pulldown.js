@@ -10,6 +10,8 @@ var resolve = require("pulldown-resolve");
 var middleMan = require("pulldown-middle-man");
 var path = require("path");
 var optimist = require("optimist");
+var async = require("async");
+var _ = require("underscore");
 
 //terminal output colours!
 //via http://roguejs.com/2011-11-30/console-colors-in-node-js/
@@ -54,12 +56,21 @@ Pulldown.prototype.getLocalJson = function() {
 };
 
 Pulldown.prototype.processUserArgs = function(callback) {
-  this.userArgs.forEach(function(item) {
+  async.map(this.userArgs, function(item, done) {
     this.parsePackageArgument(item, function(data) {
-      callback(data);
+      done(null, data);
     }.bind(this));
-  }.bind(this));
+  }.bind(this), function(err, results) {
+    results = _.flatten(results);
 
+    // need to make sure each obj in results is uniq
+    // easiest way to do this is to stringify them and compare strings
+    // filter out dups, and then JSON.parse back to objects
+    var jsonResults = results.map(function(item) { return JSON.stringify(item); });
+    results = _.uniq(jsonResults).map(function(item) { return JSON.parse(item) });
+
+    callback(results);
+  });
 };
 
 Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
