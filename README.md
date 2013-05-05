@@ -68,6 +68,24 @@ Here I define a custom set, `backboneapp`, that will download jQuery, Underscore
 pulldown backboneapp
 ```
 
+## Output Directorys
+
+You can tell Pulldown to save what it downloads into a directory, that will be created if it doesn't exist:
+
+```
+pulldown backbone -o foo/
+```
+
+## Custom File Names
+
+If you're downloading something that will resolve to a single file, you can choose the name of the file that will be downloaded:
+
+```
+pulldown jquery:foo.js
+```
+
+Will download jQuery to `foo.js`.
+
 ## Contributing
 
 The Pulldown source is maintained jointly by @jackfranklin and @phuu. As such, the repositories are spread out:
@@ -78,6 +96,12 @@ The Pulldown source is maintained jointly by @jackfranklin and @phuu. As such, t
 - pulldown (you're here!). This is the CLI application, and the one you should install if you want to use pulldown.
 
 ## Changelog
+
+__V0.2.3__
+- pass in an output directory to save all files to (`pulldown backbone -o foo/`)
+- support saving a file to a particular name (`pulldown jquery:foo.js`)
+__V0.2.2__
+- improve Windows support (thanks @sindresorhus)
 
 __V0.2.1__
 - make sure URLs in local JSON file are valid

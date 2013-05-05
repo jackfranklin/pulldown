@@ -1,6 +1,6 @@
 {
   "name": "pulldown",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Fetch popular web libraries from the net",
   "preferGlobal": "true",
   "bin": {
@@ -18,7 +18,8 @@
     "request": "~2.10.0",
     "shelljs": "0.0.6",
     "unzip": "0.0.3",
-    "pulldown-resolve": "0.0.4",
-    "pulldown-middle-man": "0.0.1"
+    "pulldown-resolve": "0.0.7",
+    "pulldown-middle-man": "0.0.1",
+    "optimist": "~0.4.0"
   }
 }
