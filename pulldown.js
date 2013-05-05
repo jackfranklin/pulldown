@@ -28,12 +28,12 @@ var Pulldown = function() {
   this.files = [];
 };
 
-Pulldown.prototype.init = function() {
+Pulldown.prototype.init = function(userArgs) {
+  this.userArgs = userArgs;
   this.localJson = this.getLocalJson();
-  var self = this;
-  var res = this.processUserArgs(function(urls) {
-    self.downloadFiles(urls);
-  });
+  this.processUserArgs(function(urls) {
+    this.downloadFiles(urls);
+  }.bind(this));
 };
 
 Pulldown.prototype.getLocalJson = function() {
@@ -46,14 +46,11 @@ Pulldown.prototype.getLocalJson = function() {
 };
 
 Pulldown.prototype.processUserArgs = function(callback) {
-  var self = this;
-  var args = process.argv.slice(2);
-  args.forEach(function(item) {
-    self.parsePackageArgument(item, function(data) {
+  this.userArgs.forEach(function(item) {
+    this.parsePackageArgument(item, function(data) {
       callback(data);
-    });
-  });
-  return this.files;
+    }.bind(this));
+  }.bind(this));
 };
 
 Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
@@ -90,4 +87,4 @@ Pulldown.prototype.getFile = function(url) {
 
 // let's kick this thing off
 var pulldown = new Pulldown();
-pulldown.init();
+pulldown.init(process.argv.slice(2));
