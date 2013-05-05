@@ -66,6 +66,9 @@ Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
       });
     }
   }, function(err, set) {
+    set = set.map(function(item) {
+      return item[0] === "/" ? "https:" + item : item;
+    });
     callback(set);
   });
 };
