@@ -79,6 +79,9 @@ The Pulldown source is maintained jointly by @jackfranklin and @phuu. As such, t
 
 ## Changelog
 
+__V0.2.1__
+- make sure URLs in local JSON file are valid
+
 __V0.2.0__
 - _complete_ rewrite. Too much to document here (see this README for a full briefing on the new pulldown).
 
