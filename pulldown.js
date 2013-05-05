@@ -11,6 +11,7 @@ var middleMan = require("pulldown-middle-man");
 var path = require("path");
 var optimist = require("optimist");
 var async = require("async");
+var unzip = require("unzip");
 var _ = require("underscore");
 
 //terminal output colours!
@@ -114,9 +115,22 @@ Pulldown.prototype.downloadFiles = function(urls) {
 
 Pulldown.prototype.getFile = function(url, out) {
   out = out || URL.parse(url).pathname.split("/").pop();
-  var fileDestination = path.join(this.outputDir || ".", out);
+  var isAZip = !!url.match(/\.zip$/i);
+  // Build a desitination
+  // Include the .zip if needed
+  var fileDestination = path.join(this.outputDir || ".", out + (isAZip ? '.zip' : ''));
   request(url).pipe(fs.createWriteStream(fileDestination).on("close", function() {
-    log("Success: " + url + " has been downloaded to " + fileDestination, green);
+    // If it's a zip, extract to a folder with the same name, minus the zip
+    if (isAZip) {
+      var outPath = out.replace(/\.zip$/i, '');
+      // Unzip all up in this
+      fs.createReadStream(fileDestination)
+        .pipe(unzip.Extract({ path: outPath }))
+        .on('close', function () {
+          log("Success: " + fileDestination + " was extracted to " + outPath, green);
+        });
+    }
+    log("Success: " + url + " was downloaded to " + fileDestination, green);
   }));
 };
 
