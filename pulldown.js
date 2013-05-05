@@ -8,6 +8,7 @@ var shell = require('shelljs');
 var pkg = require('./package.json');
 var resolve = require("pulldown-resolve");
 var middleMan = require("pulldown-middle-man");
+var path = require("path");
 
 //terminal output colours!
 //via http://roguejs.com/2011-11-30/console-colors-in-node-js/
@@ -20,7 +21,7 @@ var log = function(message, colour) {
 };
 
 var isUrl = function(str) {
-  return str.match(/\/\//);
+  return !!URL.parse(str).hostname;
 };
 
 var Pulldown = function() {
@@ -37,9 +38,10 @@ Pulldown.prototype.init = function() {
 
 Pulldown.prototype.getLocalJson = function() {
   var file;
+  var homeDir = process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'];
   try {
-    file = JSON.parse(fs.readFileSync(process.env["HOME"] + "/.pulldown.json").toString());
-  } catch(e) { file = {} };
+    file = JSON.parse(fs.readFileSync(path.join(homeDir, ".pulldown.json")).toString());
+  } catch(e) { file = {}; };
   return file;
 };
 
