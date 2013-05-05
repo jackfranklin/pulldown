@@ -1,6 +1,6 @@
 # pulldown
 
-The minimal JavaScript package manager on the web, by @jackfranklin and @phuu.
+The minimal JavaScript package manager on the web, by [@jackfranklin](https://github.com/jackfranklin) and [@phuu](https://github.com/phuu).
 
 ## Installation
 
