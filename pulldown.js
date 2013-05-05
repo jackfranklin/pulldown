@@ -95,9 +95,13 @@ Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
       return item[0] === "/" ? "https:" + item : item;
     });
     var resp = [];
-    set.forEach(function(item) {
-      resp.push({ url: item, outputName: outputName });
-    });
+    if(set.length === 1) {
+      resp.push({ url: set[0], outputName: outputName });
+    } else {
+      set.forEach(function(item) {
+        resp.push({ url: item });
+      });
+    }
     callback(resp);
   });
 };
