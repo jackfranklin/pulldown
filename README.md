@@ -97,6 +97,9 @@ The Pulldown source is maintained jointly by @jackfranklin and @phuu. As such, t
 
 ## Changelog
 
+__V0.2.4__
+- show an error if the search term could not be resolved
+
 __V0.2.3__
 - pass in an output directory to save all files to (`pulldown backbone -o foo/`)
 - support saving a file to a particular name (`pulldown jquery:foo.js`)
