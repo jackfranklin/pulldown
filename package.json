@@ -1,6 +1,6 @@
 {
   "name": "pulldown",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Fetch popular web libraries from the net",
   "preferGlobal": "true",
   "bin": {

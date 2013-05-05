@@ -97,6 +97,9 @@ The Pulldown source is maintained jointly by @jackfranklin and @phuu. As such, t
 
 ## Changelog
 
+__V0.2.5__
+- avoid downloading the same file more than once if we can avoid it
+
 __V0.2.4__
 - show an error if the search term could not be resolved
 
