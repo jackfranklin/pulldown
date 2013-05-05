@@ -9,6 +9,7 @@ var pkg = require('./package.json');
 var resolve = require("pulldown-resolve");
 var middleMan = require("pulldown-middle-man");
 var path = require("path");
+var inputArgs = require("optimist").argv;
 
 //terminal output colours!
 //via http://roguejs.com/2011-11-30/console-colors-in-node-js/
@@ -29,7 +30,13 @@ var Pulldown = function() {
 };
 
 Pulldown.prototype.init = function(userArgs) {
-  this.userArgs = userArgs;
+  this.userArgs = inputArgs._;
+  this.outputDir = inputArgs.o || inputArgs.output;
+  if(this.outputDir) {
+    // we're going to be writing here, so we should make sure it exists
+    shell.mkdir('-p', this.outputDir);
+  }
+
   this.localJson = this.getLocalJson();
   this.processUserArgs(function(urls) {
     this.downloadFiles(urls);
@@ -51,9 +58,13 @@ Pulldown.prototype.processUserArgs = function(callback) {
       callback(data);
     }.bind(this));
   }.bind(this));
+
 };
 
 Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
+  var split = searchTerm.split(":");
+  var outputName = split[1];
+  searchTerm = split[0];
   resolve(searchTerm, {
     registry: this.localJson,
     helper: function(identifier, callback) {
@@ -68,18 +79,23 @@ Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
     set = set.map(function(item) {
       return item[0] === "/" ? "https:" + item : item;
     });
-    callback(set);
+    var resp = [];
+    set.forEach(function(item) {
+      resp.push({ url: item, outputName: outputName });
+    });
+    callback(resp);
   });
 };
 
 Pulldown.prototype.downloadFiles = function(urls) {
   urls.forEach(function(file) {
-    this.getFile(file);
+    this.getFile(file.url, file.outputName);
   }.bind(this));
 };
 
-Pulldown.prototype.getFile = function(url) {
-  var fileDestination = URL.parse(url).pathname.split('/').pop();
+Pulldown.prototype.getFile = function(url, out) {
+  out = out || URL.parse(url).pathname.split("/").pop();
+  var fileDestination = path.join(this.outputDir || ".", out);
   request(url).pipe(fs.createWriteStream(fileDestination).on("close", function() {
     log("Success: " + url + " has been downloaded to " + fileDestination, green);
   }));
