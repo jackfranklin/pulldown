@@ -97,6 +97,9 @@ The Pulldown source is maintained jointly by @jackfranklin and @phuu. As such, t
 
 ## Changelog
 
+__V0.3.0__
+- support downloading and unzipping of ZIP files.
+
 __V0.2.6__
 - only let the file name be dictated by the user if there's only one file to download
 
