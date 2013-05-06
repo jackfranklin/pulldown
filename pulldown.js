@@ -115,10 +115,11 @@ Pulldown.prototype.downloadFiles = function(urls) {
 
 Pulldown.prototype.getFile = function(url, out) {
   out = out || URL.parse(url).pathname.split("/").pop();
-  var isAZip = !!url.match(/\.zip$/i);
+  var isAZip = !!url.match(/\.zip$/i),
+      needsZip = !out.match(/\.zip$/i);
   // Build a desitination
   // Include the .zip if needed
-  var fileDestination = path.join(this.outputDir || ".", out + (isAZip ? '.zip' : ''));
+  var fileDestination = path.join(this.outputDir || ".", out + (isAZip && needsZip ? '.zip' : ''));
   request(url).pipe(fs.createWriteStream(fileDestination).on("close", function() {
     // If it's a zip, extract to a folder with the same name, minus the zip
     if (isAZip) {
