@@ -1,6 +1,8 @@
 # pulldown
 
-The minimal JavaScript package manager, by [@jackfranklin](https://github.com/jackfranklin) and [@phuu](https://github.com/phuu).
+The minimal package manager.
+
+Built with &hearts; by [@jackfranklin](https://github.com/jackfranklin) and [@phuu](https://github.com/phuu).
 
 ## Installation
 
