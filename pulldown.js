@@ -33,6 +33,7 @@ var Pulldown = function() {
 };
 
 Pulldown.prototype.init = function(userArgs) {
+  if (!userArgs.length) return this.help();
   var inputArgs = optimist.parse(userArgs);
   this.userArgs = inputArgs._;
   this.outputDir = inputArgs.o || inputArgs.output;
@@ -45,6 +46,26 @@ Pulldown.prototype.init = function(userArgs) {
   this.processUserArgs(function(urls) {
     this.downloadFiles(urls);
   }.bind(this));
+};
+
+Pulldown.prototype.help = function () {
+  console.log();
+  console.log('  Usage: pulldown <identifier>[:<file>] [<identifier>[:<file>], ...] [options]');
+  console.log();
+  console.log('  An <identifier> can be a URL, a library name or a set.');
+  console.log();
+  console.log('  Options:');
+  console.log();
+  console.log('    -o, --output  output directory');
+  console.log();
+  console.log('  Example usage:');
+  console.log();
+  console.log('    pulldown jquery             # Downloads jQuery');
+  console.log('    pulldown jquery:jq.js       # Downloads jQuery to jq.js');
+  console.log('    pulldown jquery angular.js  # Downloads jQuery and Angular.js');
+  console.log('    pulldown backbone           # Downloads jQuery, Underscore.js and Backbone.js');
+  console.log('    pulldown backbone -o js     # Downloads same as above, but into js/');
+  console.log();
 };
 
 Pulldown.prototype.getLocalJson = function() {
