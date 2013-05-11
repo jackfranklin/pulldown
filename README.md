@@ -124,6 +124,17 @@ $ pulldown jquery:foo.js
 ->  Success: https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js was downloaded to foo.js
 ```
 
+## Versions
+
+Pulldown supports finding a specific version of a library, and will do its best to find it. Use `identifier@version`:
+
+```
+$ pulldown jquery@1.7.1
+->  Success: https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js was downloaded to jquery.min.js
+```
+
+Pulldown searches [cdnjs](http://cdnjs.com/) for it. If it can't find the right version, it'll give you the latest.
+
 ## Upgrading
 
 ```
