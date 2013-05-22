@@ -33,8 +33,8 @@ var Pulldown = function() {
 };
 
 Pulldown.prototype.init = function(userArgs) {
-  if (!userArgs.length) return this.help();
   var inputArgs = optimist.parse(userArgs);
+  if (!userArgs.length || inputArgs.h || inputArgs.help) return this.help();
   this.userArgs = inputArgs._;
   this.outputDir = inputArgs.o || inputArgs.output;
   if(this.outputDir) {
