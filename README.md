@@ -153,7 +153,7 @@ The Pulldown source is maintained jointly by @jackfranklin and @phuu. As such, t
 ## Changelog
 
 __V0.3.1__
-- added a help command (`pulldown -h`)
+- added a help command (`pulldown`)
 - don't add `zip` extension to output path if it is already there
 
 __V0.3.0__
