@@ -96,6 +96,10 @@ Pulldown.prototype.processUserArgs = function(callback) {
 };
 
 Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
+  if(isUrl(searchTerm)) {
+    callback({ url: searchTerm });
+    return;
+  }
   var split = searchTerm.split(":");
   var outputName;
   if (split.length > 1) {
