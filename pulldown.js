@@ -61,7 +61,7 @@ Pulldown.prototype.help = function () {
   console.log('  Example usage:');
   console.log();
   console.log('    pulldown jquery             # Downloads jQuery');
-  console.log('    pulldown jquery::jq.js       # Downloads jQuery to jq.js');
+  console.log('    pulldown jquery::jq.js      # Downloads jQuery to jq.js');
   console.log('    pulldown jquery angular.js  # Downloads jQuery and Angular.js');
   console.log('    pulldown backbone           # Downloads jQuery, Underscore.js and Backbone.js');
   console.log('    pulldown backbone -o js     # Downloads same as above, but into js/');
