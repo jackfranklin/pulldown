@@ -27,5 +27,9 @@
     "async": "~0.2.8",
     "underscore": "~1.4.4"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "mocha": "~1.10.0",
+    "sinon": "~1.7.2",
+    "mocha-runner": "0.0.4"
+  }
 }

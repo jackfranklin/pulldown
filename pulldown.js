@@ -50,7 +50,7 @@ Pulldown.prototype.init = function(userArgs) {
 
 Pulldown.prototype.help = function () {
   console.log();
-  console.log('  Usage: pulldown <identifier>[:<file>] [<identifier>[:<file>], ...] [options]');
+  console.log('  Usage: pulldown <identifier>[::<file>] [<identifier>[::<file>], ...] [options]');
   console.log();
   console.log('  An <identifier> can be a URL, a library name or a set.');
   console.log();
@@ -61,7 +61,7 @@ Pulldown.prototype.help = function () {
   console.log('  Example usage:');
   console.log();
   console.log('    pulldown jquery             # Downloads jQuery');
-  console.log('    pulldown jquery:jq.js       # Downloads jQuery to jq.js');
+  console.log('    pulldown jquery::jq.js      # Downloads jQuery to jq.js');
   console.log('    pulldown jquery angular.js  # Downloads jQuery and Angular.js');
   console.log('    pulldown backbone           # Downloads jQuery, Underscore.js and Backbone.js');
   console.log('    pulldown backbone -o js     # Downloads same as above, but into js/');
@@ -96,11 +96,10 @@ Pulldown.prototype.processUserArgs = function(callback) {
 };
 
 Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
-  var split = searchTerm.split(":");
-  var outputName;
+  var split = searchTerm.split("::"), outputName;
   if (split.length > 1) {
+    searchTerm = _.initial(split).join('::');
     outputName = _.last(split);
-    searchTerm = _.initial(split).join(':');
   }
   resolve(searchTerm, {
     registry: this.localJson,
@@ -160,8 +159,10 @@ Pulldown.prototype.getFile = function(url, out) {
 };
 
 // let's kick this thing off
-var pulldown = new Pulldown();
-pulldown.init(process.argv.slice(2));
+if(require.main === module) {
+  var pulldown = new Pulldown();
+  pulldown.init(process.argv.slice(2));
+}
 
 // export for testing
 module.exports = Pulldown;

@@ -150,6 +150,11 @@ The Pulldown source is maintained jointly by @jackfranklin and @phuu. As such, t
 - [pulldown-middleman](http://github.com/jackfranklin/pulldown-middle-man). This is a very small API wrapper to query the Pulldown API. It will expand as our API does.
 - pulldown (you're here!). This is the CLI application, and the one you should install if you want to use pulldown.
 
+## Running the tests
+
+    $ npm install -g mocha
+    $ node tests/test.js
+
 ## Changelog
 
 __V0.3.2__
