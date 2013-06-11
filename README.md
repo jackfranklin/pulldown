@@ -17,7 +17,7 @@ This gives you a `pulldown` command to use on your command line:
 ```bash
 $ pulldown
 
-  Usage: pulldown <identifier>[:<file>] [<identifier>[:<file>], ...] [options]
+  Usage: pulldown <identifier>[::<file>] [<identifier>[::<file>], ...] [options]
 
   An <identifier> can be a URL, a library name or a set.
 
@@ -28,7 +28,7 @@ $ pulldown
   Example usage:
 
     pulldown jquery             # Downloads jQuery
-    pulldown jquery:jq.js       # Downloads jQuery to jq.js
+    pulldown jquery::jq.js      # Downloads jQuery to jq.js
     pulldown jquery angular.js  # Downloads jQuery and Angular.js
     pulldown backbone           # Downloads jQuery, Underscore.js and Backbone.js
     pulldown backbone -o js     # Downloads same as above, but into js/
@@ -120,7 +120,7 @@ $ pulldown backbone -o foo/
 If you're downloading something that will resolve to a single file, you can choose the name of the file that will be downloaded using a colon:
 
 ```
-$ pulldown jquery:foo.js
+$ pulldown jquery::foo.js
 ->  Success: https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js was downloaded to foo.js
 ```
 
@@ -152,10 +152,14 @@ The Pulldown source is maintained jointly by @jackfranklin and @phuu. As such, t
 
 ## Running the tests
 
-    $ npm install -g mocha
-    $ node tests/test.js
+    $ npm install --dev
+    $ node tests/tests.js
 
 ## Changelog
+
+__V0.4.0__
+- swapped to using `::` for seperating search term with output name
+- support URLs
 
 __V0.3.2__
 - allow help to be got at through `pulldown -h` or `pulldown --help`
