@@ -10,7 +10,7 @@ new Runner ({
     //- node_modules directory
     //- This file (the file that uses mocha-runner to run the tests)
     //It's recommended to create a folder named `tests` and put there all the testing stuff including this file
-    tests: ["urls.js"]
+    tests: ["urls.js", "searching.js"]
 }).run (function (error){
     //It's not the Mocha stderr
     if (error) console.log (error);
