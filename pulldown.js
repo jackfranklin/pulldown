@@ -157,8 +157,10 @@ Pulldown.prototype.getFile = function(url, out) {
 };
 
 // let's kick this thing off
-var pulldown = new Pulldown();
-pulldown.init(process.argv.slice(2));
+if(require.main === module) {
+  var pulldown = new Pulldown();
+  pulldown.init(process.argv.slice(2));
+}
 
 // export for testing
 module.exports = Pulldown;
