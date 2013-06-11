@@ -27,4 +27,13 @@ describe("Pulling down URLs", function() {
     }]
     assert(theSpy.calledWith(expectedArgs));
   });
+
+  it("handles multiple :: properly", function() {
+    pulldown.init(["http://made::up.com::foo.js"]);
+    var expectedArgs = [{
+      url: "http://made::up.com",
+      outputName: "foo.js"
+    }];
+    assert(theSpy.calledWith(expectedArgs));
+  });
 });

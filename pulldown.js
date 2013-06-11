@@ -96,9 +96,11 @@ Pulldown.prototype.processUserArgs = function(callback) {
 };
 
 Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
-  var split = searchTerm.split("::");
-  var outputName = split[1];
-  searchTerm = split[0];
+  var split = searchTerm.split("::"), outputName;
+  if (split.length > 1) {
+    searchTerm = _.initial(split).join('::');
+    outputName = _.last(split);
+  }
   resolve(searchTerm, {
     registry: this.localJson,
     helper: function(identifier, callback) {
