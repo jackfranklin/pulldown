@@ -7,7 +7,7 @@
     "pulldown": "pulldown.js"
   },
   "scripts": {
-    "test": "tap ./test"
+    "test": "mocha"
   },
   "author": "Jack Franklin",
   "engines": {
@@ -29,7 +29,6 @@
   },
   "devDependencies": {
     "mocha": "~1.10.0",
-    "sinon": "~1.7.2",
-    "mocha-runner": "0.0.4"
+    "sinon": "~1.7.2"
   }
 }

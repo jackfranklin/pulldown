@@ -32,7 +32,8 @@ var Pulldown = function() {
   this.files = [];
 };
 
-Pulldown.prototype.init = function(userArgs) {
+Pulldown.prototype.init = function(userArgs, done) {
+  done = done || function () {};
   var inputArgs = optimist.parse(userArgs);
   if (!userArgs.length || inputArgs.h || inputArgs.help) return this.help();
   this.userArgs = inputArgs._;
@@ -44,7 +45,7 @@ Pulldown.prototype.init = function(userArgs) {
 
   this.localJson = this.getLocalJson();
   this.processUserArgs(function(urls) {
-    this.downloadFiles(urls);
+    this.downloadFiles(urls, done);
   }.bind(this));
 };
 
@@ -130,13 +131,14 @@ Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
   });
 };
 
-Pulldown.prototype.downloadFiles = function(urls) {
-  urls.forEach(function(file) {
-    this.getFile(file.url, file.outputName);
-  }.bind(this));
+Pulldown.prototype.downloadFiles = function(urls, downloadDone) {
+  async.map(urls, function(file, done) {
+    this.getFile(file.url, file.outputName, done);
+  }.bind(this), downloadDone);
 };
 
-Pulldown.prototype.getFile = function(url, out) {
+// TODO error handle this
+Pulldown.prototype.getFile = function(url, out, doneGetFile) {
   out = out || URL.parse(url).pathname.split("/").pop();
   var isAZip = !!url.match(/\.zip$/i),
       needsZip = !out.match(/\.zip$/i);
@@ -144,17 +146,25 @@ Pulldown.prototype.getFile = function(url, out) {
   // Include the .zip if needed
   var fileDestination = path.join(this.outputDir || ".", out + (isAZip && needsZip ? '.zip' : ''));
   request(url).pipe(fs.createWriteStream(fileDestination).on("close", function() {
-    // If it's a zip, extract to a folder with the same name, minus the zip
-    if (isAZip) {
-      var outPath = out.replace(/\.zip$/i, '');
-      // Unzip all up in this
-      fs.createReadStream(fileDestination)
-        .pipe(unzip.Extract({ path: outPath }))
-        .on('close', function () {
-          log("Success: " + fileDestination + " was extracted to " + outPath, green);
-        });
-    }
     log("Success: " + url + " was downloaded to " + fileDestination, green);
+    // If it's a zip, extract to a folder with the same name, minus the zip
+    if (!isAZip) return doneGetFile(null, {
+      url: url,
+      fileDestination: fileDestination
+    });
+    // It's a ZIIIIP!!! http://s.phuu.net/1bjjyox
+    var outPath = out.replace(/\.zip$/i, '');
+    // Unzip all up in this
+    fs.createReadStream(fileDestination)
+      .pipe(unzip.Extract({ path: outPath }))
+      .on('close', function () {
+        log("Success: " + fileDestination + " was extracted to " + outPath, green);
+        doneGetFile(null, {
+          url: url,
+          fileDestination: outPath,
+          unzipped: true
+        });
+      });
   }));
 };
 
