@@ -8,7 +8,7 @@ var getLocalJsonMock = require('./mock/getLocalJson');
 Pulldown.prototype.getFile = getFileMock;
 Pulldown.prototype.getLocalJson = getLocalJsonMock;
 
-describe("Finding a library", function() {
+describe("Searching for a library", function() {
 
   it("uses the local json file first", function (done) {
     var theSpy = sinon.spy(Pulldown.prototype.downloadFiles);
@@ -29,8 +29,6 @@ describe("Finding a library", function() {
   });
 
   it("falls back to the CDN", function(done) {
-    // longer timeout as this one does hit the network
-    this.timeout(5000);
     var theSpy = sinon.spy(Pulldown.prototype.downloadFiles);
     var pulldown = new Pulldown();
     pulldown.init(["jquery"], function () {
