@@ -7,8 +7,13 @@ fs.exists("test/tmp", function(exists) {
   if(!exists) fs.mkdirSync("test/tmp");
 });
 
-
 describe("Integration Tests", function() {
+  before(function(done) {
+    // make sure pulldown is on the path by npm link-ing it
+    childProcess.exec('npm link', function() {
+      done();
+    });
+  });
   beforeEach(function(done) {
     rimraf.sync("test/tmp");
     fs.mkdirSync("test/tmp");
