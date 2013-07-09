@@ -6,6 +6,8 @@ Built with &hearts; by [@jackfranklin](https://github.com/jackfranklin) and [@ph
 
 [![Build Status](https://travis-ci.org/jackfranklin/pulldown.png)](https://travis-ci.org/jackfranklin/pulldown)
 
+Supports Node 0.10.x and 0.8.x.
+
 ## Install
 
 Install pulldown globally using npm:
