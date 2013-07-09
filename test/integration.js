@@ -25,6 +25,9 @@ describe("Integration Tests", function() {
     // TODO: figure out why it timesout without blank callback
     pd = childProcess.exec('cd test/tmp && pulldown jquery', function() {});
     pd.on("exit", function(code) {
+      fs.readdir("test/tmp", function(err, files) {
+        console.log(files);
+      });
       fs.exists("test/tmp/jquery.min.js", function(exists) {
         assert(exists);
         done();
@@ -35,6 +38,9 @@ describe("Integration Tests", function() {
   it("downloads files with the custom name if specified", function(done) {
     pd = childProcess.exec('cd test/tmp && pulldown jquery::jquery.js', function() {});
     pd.on("exit", function(code) {
+      fs.readdir("test/tmp", function(err, files) {
+        console.log(files);
+      });
       fs.exists("test/tmp/jquery.js", function(exists) {
         assert(exists);
         done();
@@ -45,6 +51,9 @@ describe("Integration Tests", function() {
   it("can download multiple files at once", function(done) {
     pd = childProcess.exec('cd test/tmp && pulldown jquery underscore', function() {});
     pd.on("exit", function(code) {
+      fs.readdir("test/tmp", function(err, files) {
+        console.log(files);
+      });
       var jqueryExists = fs.existsSync("test/tmp/jquery.min.js");
       var underscoreExists = fs.existsSync("test/tmp/underscore-min.js");
       assert(jqueryExists && underscoreExists);
@@ -55,6 +64,9 @@ describe("Integration Tests", function() {
   it("supports names for multiple downloads", function(done) {
     pd = childProcess.exec('cd test/tmp && pulldown jquery::foo.js underscore::bar.js', function() {});
     pd.on("exit", function(code) {
+      fs.readdir("test/tmp", function(err, files) {
+        console.log(files);
+      });
       var jqueryExists = fs.existsSync("test/tmp/foo.js");
       var underscoreExists = fs.existsSync("test/tmp/bar.js");
       assert(jqueryExists && underscoreExists);
