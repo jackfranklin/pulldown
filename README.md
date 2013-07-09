@@ -119,7 +119,7 @@ $ pulldown backbone -o foo/
 
 ## Custom File Names
 
-If you're downloading something that will resolve to a single file, you can choose the name of the file that will be downloaded using a colon:
+If you're downloading something that will resolve to a single file, you can choose the name of the file that will be downloaded using two colons:
 
 ```
 $ pulldown jquery::foo.js
