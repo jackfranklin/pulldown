@@ -11,7 +11,12 @@ Pulldown.prototype.getLocalJson = getLocalJsonMock;
 describe("Searching for a library", function() {
 
   it("uses the local json file first", function (done) {
-    var theSpy = sinon.spy(Pulldown.prototype.downloadFiles);
+    var oldMethod = Pulldown.prototype.downloadFiles;
+    var theSpy = sinon.spy();
+    Pulldown.prototype.downloadFiles = function(urls, done) {
+      theSpy.call(this, urls);
+      oldMethod.call(this, urls, done);
+    };
     var pulldown = new Pulldown();
     pulldown.getLocalJson = function() {
       return {
@@ -20,23 +25,26 @@ describe("Searching for a library", function() {
     };
     pulldown.init(["jquery"], function () {
       var expectedArgs = [{
-        url: "http://madeup.com/foo.js",
-        fileDestination: 'foo.js'
+        url: "http://madeup.com/foo.js"
       }];
-      assert(theSpy.withArgs(expectedArgs));
+      assert(theSpy.calledWith(expectedArgs));
       done();
     });
   });
 
   it("falls back to the CDN", function(done) {
-    var theSpy = sinon.spy(Pulldown.prototype.downloadFiles);
+    var oldMethod = Pulldown.prototype.downloadFiles;
+    var theSpy = sinon.spy();
+    Pulldown.prototype.downloadFiles = function(urls, done) {
+      theSpy.call(this, urls);
+      oldMethod.call(this, urls, done);
+    };
     var pulldown = new Pulldown();
     pulldown.init(["jquery"], function () {
       var expectedArgs = [{
-        url: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js',
-        fileDestination: 'jquery.min.js'
+        url: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js'
       }];
-      assert(theSpy.withArgs(expectedArgs));
+      assert(theSpy.calledWith(expectedArgs));
       done();
     });
   });
