@@ -4,6 +4,8 @@ Minimalist package manager – quickly grab a copy of your favourite library.
 
 Built with &hearts; by [@jackfranklin](https://github.com/jackfranklin) and [@phuu](https://github.com/phuu).
 
+[![Build Status](https://travis-ci.org/jackfranklin/pulldown.png)](https://travis-ci.org/jackfranklin/pulldown)
+
 ## Install
 
 Install pulldown globally using npm:
