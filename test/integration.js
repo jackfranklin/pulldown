@@ -21,7 +21,6 @@ describe("Integration Tests", function() {
   });
 
   it("downloads files and uses the name from cdnjs", function(done) {
-    this.timeout = 5000;
     // without the blank CB func, the test timesout
     // TODO: figure out why it timesout without blank callback
     pd = childProcess.exec('cd test/tmp && pulldown jquery', function() {});
@@ -34,7 +33,6 @@ describe("Integration Tests", function() {
   });
 
   it("downloads files with the custom name if specified", function(done) {
-    this.timeout = 5000;
     pd = childProcess.exec('cd test/tmp && pulldown jquery::jquery.js', function() {});
     pd.on("exit", function(code) {
       fs.exists("test/tmp/jquery.js", function(exists) {
@@ -45,7 +43,6 @@ describe("Integration Tests", function() {
   });
 
   it("can download multiple files at once", function(done) {
-    this.timeout = 5000;
     pd = childProcess.exec('cd test/tmp && pulldown jquery underscore', function() {});
     pd.on("exit", function(code) {
       var jqueryExists = fs.existsSync("test/tmp/jquery.min.js");
@@ -56,7 +53,6 @@ describe("Integration Tests", function() {
   });
 
   it("supports names for multiple downloads", function(done) {
-    this.timeout = 5000;
     pd = childProcess.exec('cd test/tmp && pulldown jquery::foo.js underscore::bar.js', function() {});
     pd.on("exit", function(code) {
       var jqueryExists = fs.existsSync("test/tmp/foo.js");

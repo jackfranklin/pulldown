@@ -8,7 +8,7 @@ var getLocalJsonMock = require('./mock/getLocalJson');
 Pulldown.prototype.getFile = getFileMock;
 Pulldown.prototype.getLocalJson = getLocalJsonMock;
 
-describe("Finding a library", function() {
+describe("Searching for a library", function() {
 
   it("uses the local json file first", function (done) {
     var theSpy = sinon.spy(Pulldown.prototype.downloadFiles);
