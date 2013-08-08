@@ -147,17 +147,7 @@ $ npm update pulldown -g
 
 ## Contributing
 
-The Pulldown source is maintained jointly by @jackfranklin and @phuu. As such, the repositories are spread out:
-
-- [pulldown-api](http://github.com/phuu/pulldown-api). This powers our server, and is where you can add sets.
-- [pulldown-resolve](http://github.com/phuu/pulldown-resolve). This resolves search terms to URLs. It takes search a search term and does its best to find a URL.
-- [pulldown-middleman](http://github.com/jackfranklin/pulldown-middle-man). This is a very small API wrapper to query the Pulldown API. It will expand as our API does.
-- pulldown (you're here!). This is the CLI application, and the one you should install if you want to use pulldown.
-
-## Running the tests
-
-    $ npm install --dev
-    $ mocha
+See the CONTRIBUTING.md file.
 
 ## Changelog
 
