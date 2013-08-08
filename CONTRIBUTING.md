@@ -13,6 +13,16 @@ The Pulldown source is maintained jointly by @jackfranklin and @phuu. As such, t
 ### Finding something to work on
 Most of the things in our [issue list](https://github.com/jackfranklin/pulldown/issues?state=open) are fair game. Do comment and let us know you're working on something though, so we don't get multiple people working on the same thing.
 
+### Setting up
+You should fork the repository, and then run:
+
+```
+$ npm install --dev
+npm link
+```
+
+The second command will ensure the version of `pulldown` used if you run it is linked to the repository, so you can try any new changes out as you go.
+
 ### Running the Tests
 
 First make sure you've got all the dev dependencies:
