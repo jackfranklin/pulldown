@@ -157,7 +157,7 @@ The Pulldown source is maintained jointly by @jackfranklin and @phuu. As such, t
 ## Running the tests
 
     $ npm install --dev
-    $ node tests/tests.js
+    $ mocha
 
 ## Changelog
 
