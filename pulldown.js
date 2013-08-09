@@ -13,6 +13,8 @@ var optimist = require("optimist");
 var async = require("async");
 var unzip = require("unzip");
 var _ = require("underscore");
+var updateNotifier = require('update-notifier');
+
 
 //terminal output colours!
 //via http://roguejs.com/2011-11-30/console-colors-in-node-js/
@@ -170,6 +172,12 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
 
 // let's kick this thing off
 if(require.main === module) {
+  var notifier = updateNotifier();
+  if(notifier.update) {
+    // Notify using the built-in convenience method
+    notifier.notify();
+  }
+
   var pulldown = new Pulldown();
   pulldown.init(process.argv.slice(2));
 }
