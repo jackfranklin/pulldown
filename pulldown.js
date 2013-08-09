@@ -1,29 +1,25 @@
 #!/usr/bin/env node
 
 //some dependencies
-var URL = require('url');
-var fs = require('fs');
-var request = require('request');
-var shell = require('shelljs');
-var pkg = require('./package.json');
-var resolve = require("pulldown-resolve");
-var middleMan = require("pulldown-middle-man");
-var path = require("path");
-var optimist = require("optimist");
-var async = require("async");
-var unzip = require("unzip");
-var _ = require("underscore");
+var URL            = require('url');
+var fs             = require('fs');
+var request        = require('request');
+var shell          = require('shelljs');
+var pkg            = require('./package.json');
+var resolve        = require("pulldown-resolve");
+var middleMan      = require("pulldown-middle-man");
+var path           = require("path");
+var optimist       = require("optimist");
+var async          = require("async");
+var unzip          = require("unzip");
+var _              = require("underscore");
+var chalk          = require("chalk");
 var updateNotifier = require('update-notifier');
 
-
-//terminal output colours!
-//via http://roguejs.com/2011-11-30/console-colors-in-node-js/
-var red   = '\033[31m';
-var green = '\033[32m';
-var reset = '\033[0m';
-
 var log = function(message, colour) {
-  colour ? console.log("->", colour, message, reset) : console.log("->", message);
+  var prefix = "->";
+  var message = (colour ? chalk[colour](message) : message);
+  console.log(prefix, message);
 };
 
 var isUrl = function(str) {
@@ -116,7 +112,7 @@ Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
     }
   }, function(err, set) {
     if(!set.length) {
-      log("Nothing found for " + searchTerm, red);
+      log("Nothing found for " + searchTerm, "red");
     }
     set = set.map(function(item) {
       return item[0] === "/" ? "https:" + item : item;
@@ -148,7 +144,7 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
   // Include the .zip if needed
   var fileDestination = path.join(this.outputDir || ".", out + (isAZip && needsZip ? '.zip' : ''));
   request(url).pipe(fs.createWriteStream(fileDestination).on("close", function() {
-    log("Success: " + url + " was downloaded to " + fileDestination, green);
+    log("Success: " + url + " was downloaded to " + fileDestination, "green");
     // If it's a zip, extract to a folder with the same name, minus the zip
     if (!isAZip) return doneGetFile(null, {
       url: url,
@@ -160,7 +156,7 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
     fs.createReadStream(fileDestination)
       .pipe(unzip.Extract({ path: outPath }))
       .on('close', function () {
-        log("Success: " + fileDestination + " was extracted to " + outPath, green);
+        log("Success: " + fileDestination + " was extracted to " + outPath, "green");
         doneGetFile(null, {
           url: url,
           fileDestination: outPath,
