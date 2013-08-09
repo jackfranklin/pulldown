@@ -1,22 +1,21 @@
 #!/usr/bin/env node
 
 //some dependencies
-var URL       = require('url');
-var fs        = require('fs');
-var request   = require('request');
-var shell     = require('shelljs');
-var pkg       = require('./package.json');
-var resolve   = require("pulldown-resolve");
-var middleMan = require("pulldown-middle-man");
-var path      = require("path");
-var optimist  = require("optimist");
-var async     = require("async");
-var unzip     = require("unzip");
-var _         = require("underscore");
-var chalk     = require("chalk");
+var URL            = require('url');
+var fs             = require('fs');
+var request        = require('request');
+var shell          = require('shelljs');
+var pkg            = require('./package.json');
+var resolve        = require("pulldown-resolve");
+var middleMan      = require("pulldown-middle-man");
+var path           = require("path");
+var optimist       = require("optimist");
+var async          = require("async");
+var unzip          = require("unzip");
+var _              = require("underscore");
+var chalk          = require("chalk");
+var updateNotifier = require('update-notifier');
 
-//terminal output colours!
-//via http://roguejs.com/2011-11-30/console-colors-in-node-js/
 var log = function(message, colour) {
   var prefix = "->";
   var message = (colour ? chalk[colour](message) : message);
@@ -169,6 +168,12 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
 
 // let's kick this thing off
 if(require.main === module) {
+  var notifier = updateNotifier();
+  if(notifier.update) {
+    // Notify using the built-in convenience method
+    notifier.notify();
+  }
+
   var pulldown = new Pulldown();
   pulldown.init(process.argv.slice(2));
 }
