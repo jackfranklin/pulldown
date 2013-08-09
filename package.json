@@ -32,6 +32,7 @@
   "devDependencies": {
     "mocha": "~1.10.0",
     "sinon": "~1.7.2",
-    "rimraf": "~2.2.0"
+    "rimraf": "~2.2.0",
+    "nock": "~0.22.1"
   }
 }
