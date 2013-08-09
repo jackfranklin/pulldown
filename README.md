@@ -151,6 +151,10 @@ See the CONTRIBUTING.md file.
 
 ## Changelog
 
+__V0.5.0__
+- pulldown will now notify you when a new version is out and you should upgrade
+- swapped to using [chalk](https://github.com/sindresorhus/chalk) for the coloured output
+
 __V0.4.0__
 - swapped to using `::` for seperating search term with output name
 - support URLs
