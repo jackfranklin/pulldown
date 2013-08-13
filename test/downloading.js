@@ -95,3 +95,20 @@ describe("Downloading from local JSON", function() {
     });
   });
 });
+
+describe("Downloading from URL", function() {
+  beforeEach(setup);
+  it("can accept a URL to download", function(done) {
+    new Pulldown().init(["http://foo.com/madeup.js"], function() {
+      assert(spy.calledWith("http://foo.com/madeup.js"), "getFile was called with the URL passed to Pulldown");
+      done();
+    });
+  });
+
+  it("can accept a URL to download and a custom name", function(done) {
+    new Pulldown().init(["http://foo.com/madeup.js::test.js"], function() {
+      assert(spy.calledWith("http://foo.com/madeup.js", "test.js"), "getFile was called with the URL passed to Pulldown");
+      done();
+    });
+  });
+});
