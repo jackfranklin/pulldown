@@ -48,6 +48,18 @@ describe("Searching for a library", function() {
   });
 });
 
+describe("Downloading with custom file name", function() {
+  beforeEach(setup);
+  it("lets the user specify the filename", function(done) {
+    var api = mockAndReturn("jquery", [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
+    new Pulldown().init(["jquery::foo.js"], function() {
+      assert(api.isDone(), "the API was hit with /set/jquery");
+      assert(spy.calledWith("https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js", "foo.js"), "getFile was called with the expected arguments");
+      done();
+    });
+  });
+});
+
 describe("Searching for a set", function() {
   beforeEach(setup);
 
