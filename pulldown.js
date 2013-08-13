@@ -16,11 +16,6 @@ var _              = require("underscore");
 var chalk          = require("chalk");
 var updateNotifier = require('update-notifier');
 
-var log = function(message, colour) {
-  var prefix = "->";
-  var message = (colour ? chalk[colour](message) : message);
-  console.log(prefix, message);
-};
 
 var isUrl = function(str) {
   return !!URL.parse(str).hostname;
@@ -28,6 +23,12 @@ var isUrl = function(str) {
 
 var Pulldown = function() {
   this.files = [];
+};
+
+Pulldown.prototype.log = function(message, colour) {
+  var prefix = "->";
+  var message = (colour ? chalk[colour](message) : message);
+  console.log(prefix, message);
 };
 
 Pulldown.prototype.init = function(userArgs, done) {
@@ -95,6 +96,7 @@ Pulldown.prototype.processUserArgs = function(callback) {
 };
 
 Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
+  var self = this;
   var split = searchTerm.split("::"), outputName;
   if (split.length > 1) {
     searchTerm = _.initial(split).join('::');
@@ -112,7 +114,7 @@ Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
     }
   }, function(err, set) {
     if(!set.length) {
-      log("Nothing found for " + searchTerm, "red");
+      self.log("Nothing found for " + searchTerm, "red");
     }
     set = set.map(function(item) {
       return item[0] === "/" ? "https:" + item : item;
@@ -137,6 +139,7 @@ Pulldown.prototype.downloadFiles = function(urls, downloadDone) {
 
 // TODO error handle this
 Pulldown.prototype.getFile = function(url, out, doneGetFile) {
+  var self = this;
   out = out || URL.parse(url).pathname.split("/").pop();
   var isAZip = !!url.match(/\.zip$/i),
       needsZip = !out.match(/\.zip$/i);
@@ -144,7 +147,7 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
   // Include the .zip if needed
   var fileDestination = path.join(this.outputDir || ".", out + (isAZip && needsZip ? '.zip' : ''));
   request(url).pipe(fs.createWriteStream(fileDestination).on("close", function() {
-    log("Success: " + url + " was downloaded to " + fileDestination, "green");
+    self.log("Success: " + url + " was downloaded to " + fileDestination, "green");
     // If it's a zip, extract to a folder with the same name, minus the zip
     if (!isAZip) return doneGetFile(null, {
       url: url,
@@ -156,7 +159,7 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
     fs.createReadStream(fileDestination)
       .pipe(unzip.Extract({ path: outPath }))
       .on('close', function () {
-        log("Success: " + fileDestination + " was extracted to " + outPath, "green");
+        self.log("Success: " + fileDestination + " was extracted to " + outPath, "green");
         doneGetFile(null, {
           url: url,
           fileDestination: outPath,
