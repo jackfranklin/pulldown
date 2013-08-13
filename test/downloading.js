@@ -79,3 +79,19 @@ describe("Searching for a set", function() {
     });
   });
 });
+
+describe("Downloading from local JSON", function() {
+  beforeEach(function() {
+    setup();
+    Pulldown.prototype.getLocalJson = function() {
+      return { "jquery": "http://foo.com/madeup.js" };
+    };
+  });
+
+  it("searches that before searching the web", function(done) {
+    new Pulldown().init(["jquery"], function() {
+      assert(spy.calledWith("http://foo.com/madeup.js"), "getFile was called with the local URL");
+      done();
+    });
+  });
+});
