@@ -7,7 +7,7 @@
     "pulldown": "pulldown.js"
   },
   "scripts": {
-    "test": "mocha -t 5000"
+    "test": "mocha"
   },
   "author": "Jack Franklin",
   "engines": {
