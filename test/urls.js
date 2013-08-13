@@ -17,14 +17,18 @@ var setup = function() {
   }
 };
 
+var mockAndReturn = function(searchTerm, result) {
+  return nock("http://pulldown-api.herokuapp.com/")
+         .get("/set/" + searchTerm)
+         .reply(200, result);
+}
+
 
 describe("Searching for a library", function() {
   beforeEach(setup);
 
   it("searches the api for it", function(done) {
-    var api = nock("http://pulldown-api.herokuapp.com/")
-              .get("/set/jquery")
-              .reply(200, [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
+    var api = mockAndReturn("jquery", [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
     var pulldown = new Pulldown();
     pulldown.init(["jquery"], function() {
       assert(api.isDone(), "the API was hit with /set/jquery");
@@ -34,9 +38,7 @@ describe("Searching for a library", function() {
   });
 
   it("doesn't call getFile if nothing is found", function(done) {
-    var api = nock("http://pulldown-api.herokuapp.com/")
-              .get("/set/jquery")
-              .reply(200, []);
+    var api = mockAndReturn("jquery", []);
     new Pulldown().init(["jquery"], function() {
       assert(api.isDone(), "the API was hit with /set/jquery");
       assert(!spy.called, "it did not call the getFile spy");
@@ -44,4 +46,8 @@ describe("Searching for a library", function() {
       done();
     });
   });
+});
+
+describe("Searching for a set", function() {
+  beforeEach(setup);
 });
