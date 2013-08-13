@@ -146,7 +146,16 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
   // Build a desitination
   // Include the .zip if needed
   var fileDestination = path.join(this.outputDir || ".", out + (isAZip && needsZip ? '.zip' : ''));
-  request(url).pipe(fs.createWriteStream(fileDestination).on("close", function() {
+  var stream = request(url);
+  stream.pipe(fs.createWriteStream(fileDestination));
+
+  var total = 0;
+  stream.on("data", function(chunk) {
+    total += chunk.length;
+    process.stdout.write("\r" + "Downloading: " + total + " bytes");
+  });
+  stream.on("end", function() {
+    process.stdout.write("\n");
     self.log("Success: " + url + " was downloaded to " + fileDestination, "green");
     // If it's a zip, extract to a folder with the same name, minus the zip
     if (!isAZip) return doneGetFile(null, {
@@ -166,7 +175,7 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
           unzipped: true
         });
       });
-  }));
+  });
 };
 
 // let's kick this thing off
