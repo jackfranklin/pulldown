@@ -140,7 +140,13 @@ Pulldown.prototype.downloadFiles = function(urls, downloadDone) {
 // TODO error handle this
 Pulldown.prototype.getFile = function(url, out, doneGetFile) {
   var self = this;
-  out = out || URL.parse(url).pathname.split("/").pop();
+
+  try {
+    out = out || URL.parse(url).pathname.split("/").pop();
+  } catch(e) {
+    self.log("Error: you have to use two colons (::) to specify file name, not just one.", "red");
+    return doneGetFile(e);
+  }
   var isAZip = !!url.match(/\.zip$/i),
       needsZip = !out.match(/\.zip$/i);
   // Build a desitination

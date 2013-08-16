@@ -121,10 +121,10 @@ describe("Downloading from URL", function() {
 
 describe("Depreciation warning", function() {
   beforeEach(restoreGetFile);
-  it("tells the user if they only used one : instead of the new 2", function(done) {
+  it("tells the user if they only used one : instead of the new 2 and does not throw", function(done) {
     assert.doesNotThrow(function() {
-      console.log(Pulldown.prototype.getFile);
       new Pulldown().init(['jquery:foo.js'], function() {
+        assert(log.indexOf("Error: you have to use two colons (::) to specify file name, not just one.") > -1, "An error message is logged");
         done();
       });
     });
