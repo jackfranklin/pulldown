@@ -152,7 +152,7 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
   var total = 0;
   stream.on("data", function(chunk) {
     total += chunk.length;
-    process.stdout.write("\r" + "Downloading: " + total + " bytes");
+    process.stdout.write("\r" + "Downloaded " + total + " bytes.");
   });
   stream.on("end", function() {
     process.stdout.write("\n");
