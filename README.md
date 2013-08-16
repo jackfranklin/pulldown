@@ -151,6 +151,10 @@ See the CONTRIBUTING.md file.
 
 ## Changelog
 
+__V0.6.0__
+- you can now programatically require Pulldown: `var Pulldown = require("pulldown")` (presuming it's in your package.json and installed as a dependency).
+- progress bars are shown when downloading a file
+
 __V0.5.0__
 - pulldown will now notify you when a new version is out and you should upgrade
 - swapped to using [chalk](https://github.com/sindresorhus/chalk) for the coloured output
