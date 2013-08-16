@@ -3,6 +3,7 @@ var Pulldown = require("../pulldown");
 var nock = require("nock");
 var sinon = require("sinon");
 var spy, log;
+var oldGetFile = Pulldown.prototype.getFile;
 
 var setup = function() {
   spy = sinon.spy();
@@ -16,6 +17,11 @@ var setup = function() {
     log.push(message);
   }
 };
+
+var restoreGetFile = function() {
+  Pulldown.prototype.getFile = oldGetFile;
+}
+
 
 var mockAndReturn = function(searchTerm, result) {
   return nock("http://pulldown-api.herokuapp.com/")
@@ -109,6 +115,18 @@ describe("Downloading from URL", function() {
     new Pulldown().init(["http://foo.com/madeup.js::test.js"], function() {
       assert(spy.calledWith("http://foo.com/madeup.js", "test.js"), "getFile was called with the URL passed to Pulldown");
       done();
+    });
+  });
+});
+
+describe("Depreciation warning", function() {
+  beforeEach(restoreGetFile);
+  it("tells the user if they only used one : instead of the new 2", function(done) {
+    assert.doesNotThrow(function() {
+      console.log(Pulldown.prototype.getFile);
+      new Pulldown().init(['jquery:foo.js'], function() {
+        done();
+      });
     });
   });
 });
