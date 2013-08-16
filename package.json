@@ -6,6 +6,7 @@
   "bin": {
     "pulldown": "pulldown.js"
   },
+  "main": "pulldown.js",
   "scripts": {
     "test": "mocha"
   },
