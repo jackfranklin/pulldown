@@ -11,7 +11,15 @@ var setup = function() {
     spy.apply(this, Array.prototype.slice.call(arguments));
     return doneGetFile(null, { url: url, fileDestination: out });
   };
+  stubLogs();
+};
 
+var after = function() {
+  restoreGetFile();
+  nock.cleanAll();
+};
+
+var stubLogs = function() {
   log = [];
   Pulldown.prototype.log = function(message, colour) {
     log.push(message);
@@ -32,6 +40,7 @@ var mockAndReturn = function(searchTerm, result) {
 
 describe("Searching for a library", function() {
   beforeEach(setup);
+  afterEach(after);
 
   it("searches the api for it", function(done) {
     var api = mockAndReturn("jquery", [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
@@ -56,6 +65,7 @@ describe("Searching for a library", function() {
 
 describe("Downloading with custom file name", function() {
   beforeEach(setup);
+  afterEach(after);
   it("lets the user specify the filename", function(done) {
     var api = mockAndReturn("jquery", [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
     new Pulldown().init(["jquery::foo.js"], function() {
@@ -68,6 +78,7 @@ describe("Downloading with custom file name", function() {
 
 describe("Searching for a set", function() {
   beforeEach(setup);
+  afterEach(after);
 
   it("calls getFile for each of the files", function(done) {
     var apiSet = mockAndReturn("backbone", [ "backbone.js", "underscore", "jquery" ]);
@@ -87,11 +98,16 @@ describe("Searching for a set", function() {
 });
 
 describe("Downloading from local JSON", function() {
+  var oldGetJson;
   beforeEach(function() {
     setup();
+    oldGetJson = Pulldown.prototype.getLocalJson;
     Pulldown.prototype.getLocalJson = function() {
       return { "jquery": "http://foo.com/madeup.js" };
     };
+  });
+  afterEach(function() {
+    Pulldown.prototype.getLocalJson = oldGetJson;
   });
 
   it("searches that before searching the web", function(done) {
@@ -104,6 +120,7 @@ describe("Downloading from local JSON", function() {
 
 describe("Downloading from URL", function() {
   beforeEach(setup);
+  afterEach(after);
   it("can accept a URL to download", function(done) {
     new Pulldown().init(["http://foo.com/madeup.js"], function() {
       assert(spy.calledWith("http://foo.com/madeup.js"), "getFile was called with the URL passed to Pulldown");
@@ -121,6 +138,7 @@ describe("Downloading from URL", function() {
 
 describe("Depreciation warning", function() {
   beforeEach(restoreGetFile);
+  afterEach(after);
   it("tells the user if they only used one : instead of the new 2 and does not throw", function(done) {
     assert.doesNotThrow(function() {
       new Pulldown().init(['jquery:foo.js'], function() {
@@ -133,6 +151,7 @@ describe("Depreciation warning", function() {
 
 describe("Listing sets", function() {
   beforeEach(setup);
+  afterEach(after);
 
   it("lists all the sets but not the single mappings", function(done) {
     var api = nock("http://pulldown-api.herokuapp.com")
@@ -158,5 +177,33 @@ describe("Listing sets", function() {
       done();
     });
   });
+});
 
+describe("dry run", function() {
+  beforeEach(function() {
+    restoreGetFile();
+    stubLogs();
+  });
+  afterEach(after);
+
+  it("does not download the files", function(done) {
+    var url = "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js";
+    var api = mockAndReturn("jquery", [ url ]);
+    new Pulldown().init(["-d", "jquery"], function() {
+      assert(api.isDone(), "The API is searched");
+      var logged = "https:" + url + " would have been downloaded to jquery.min.js";
+      assert(log.indexOf("Dry Run - no files will be downloaded") > -1, "it logs that it is a dry run");
+      assert(log.indexOf(logged) > -1, "It logs what would have happened");
+      done();
+    });
+  });
+
+  it("shows where the zip would have been extracted to", function(done) {
+    var url = "//some/zip/foo.zip";
+    var api = mockAndReturn("jquery", [ url ]);
+    new Pulldown().init(["--dry-run", "jquery"], function() {
+      assert(log.indexOf("foo.zip would have been extracted to foo") > -1, "it logs the zip extraction destination");
+      done();
+    });
+  });
 });
