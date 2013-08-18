@@ -173,6 +173,8 @@ Pulldown.prototype.download = function(url, fileDestination, zipOutPath, doneGet
   var self = this;
   var isAZip = !!zipOutPath;
   var stream = request(url);
+  var parts = path.join.apply(null, _.initial(fileDestination.split("/")));
+  shell.mkdir('-p', parts);
   stream.pipe(fs.createWriteStream(fileDestination));
 
   var total = 0;

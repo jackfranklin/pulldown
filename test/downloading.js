@@ -80,10 +80,10 @@ describe("Downloading with custom file name", function() {
       downloadSpy.apply(this, Array.prototype.slice.call(arguments));
       return cb(null);
     };
-    new Pulldown().init(["jquery::bar/foo.js"], function() {
+    new Pulldown().init(["jquery::bar/baz/foo.js"], function() {
       assert(downloadSpy.calledWith(
         "https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js",
-        "bar/foo.js"
+        "bar/baz/foo.js"
       ), "download is called with right arguments");
       Pulldown.prototype.download = oldDownload;
       done();
