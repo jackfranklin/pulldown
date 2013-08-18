@@ -65,7 +65,6 @@ Pulldown.prototype.processDownload = function(userArgs, bools, done) {
     this.log("Dry Run - no files will be downloaded", "underline");
   }
 
-
   if(this.outputDir) {
     // we're going to be writing here, so we should make sure it exists
     shell.mkdir('-p', this.outputDir);
@@ -79,14 +78,7 @@ Pulldown.prototype.processDownload = function(userArgs, bools, done) {
 
 Pulldown.prototype.help = require("./lib/help");
 
-Pulldown.prototype.getLocalJson = function() {
-  var file;
-  var homeDir = process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'];
-  try {
-    file = JSON.parse(fs.readFileSync(path.join(homeDir, ".pulldown.json")).toString());
-  } catch(e) { file = {}; };
-  return file;
-};
+Pulldown.prototype.getLocalJson = require("./lib/parsejson");
 
 Pulldown.prototype.processUserArgs = function(userArgs, callback) {
   async.map(userArgs, function(item, done) {
