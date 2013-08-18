@@ -21,13 +21,14 @@
   "dependencies": {
     "request": "~2.10.0",
     "shelljs": "0.0.6",
-    "unzip": "~0.1.7",
+    "unzip": "~0.1.8",
     "pulldown-resolve": "0.0.7",
     "pulldown-middle-man": "0.1.0",
     "async": "~0.2.8",
     "underscore": "~1.4.4",
     "chalk": "~0.2.0",
-    "update-notifier": "~0.1.5"
+    "update-notifier": "~0.1.5",
+    "optimist": "~0.6.0"
   },
   "devDependencies": {
     "mocha": "~1.10.0",
