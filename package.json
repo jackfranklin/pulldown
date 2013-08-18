@@ -35,6 +35,7 @@
     "rimraf": "~2.2.0",
     "nock": "~0.22.1",
     "grunt": "~0.4.1",
-    "grunt-contrib-jshint": "~0.6.3"
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-simple-mocha": "~0.4.0"
   }
 }
