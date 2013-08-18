@@ -138,7 +138,7 @@ Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
 
 Pulldown.prototype.downloadFiles = function(urls, downloadDone) {
   async.map(urls, function(file, done) {
-    this.getFile(file.url, file.outputName, done);
+    this.processFileGet(file.url, file.outputName, done);
   }.bind(this), downloadDone);
 };
 
@@ -167,7 +167,7 @@ Pulldown.prototype.download = function(url, fileDestination, zipOutPath, doneGet
 };
 
 // TODO error handle this
-Pulldown.prototype.getFile = function(url, out, doneGetFile) {
+Pulldown.prototype.processFileGet = function(url, out, doneGetFile) {
   var self = this;
 
   try {

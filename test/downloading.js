@@ -3,11 +3,11 @@ var Pulldown = require("../pulldown");
 var nock     = require("nock");
 var sinon    = require("sinon");
 var spy, log;
-var oldGetFile = Pulldown.prototype.getFile;
+var oldGetFile = Pulldown.prototype.processFileGet;
 
 var setup = function() {
   spy = sinon.spy();
-  Pulldown.prototype.getFile = function(url, out, doneGetFile) {
+  Pulldown.prototype.processFileGet = function(url, out, doneGetFile) {
     spy.apply(this, Array.prototype.slice.call(arguments));
     return doneGetFile(null, { url: url, fileDestination: out });
   };
@@ -27,7 +27,7 @@ var stubLogs = function() {
 };
 
 var restoreGetFile = function() {
-  Pulldown.prototype.getFile = oldGetFile;
+  Pulldown.prototype.processFileGet = oldGetFile;
 };
 
 var mockAndReturn = function(searchTerm, result) {
@@ -45,16 +45,16 @@ describe("Searching for a library", function() {
     var pulldown = new Pulldown();
     pulldown.init(["jquery"], function() {
       assert(api.isDone(), "the API was hit with /set/jquery");
-      assert(spy.calledWith("https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js", undefined), "getFile was called with the expected arguments");
+      assert(spy.calledWith("https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js", undefined), "processFileGet was called with the expected arguments");
       done();
     });
   });
 
-  it("doesn't call getFile if nothing is found", function(done) {
+  it("doesn't call processFileGet if nothing is found", function(done) {
     var api = mockAndReturn("jquery", []);
     new Pulldown().init(["jquery"], function() {
       assert(api.isDone(), "the API was hit with /set/jquery");
-      assert(!spy.called, "it did not call the getFile spy");
+      assert(!spy.called, "it did not call the processFileGet spy");
       assert(log.indexOf("Nothing found for jquery") > -1, "It tells the user it didn't find anything");
       done();
     });
@@ -66,7 +66,7 @@ describe("Downloading with custom file name", function() {
     var api = mockAndReturn("jquery", [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
     new Pulldown().init(["jquery::foo.js"], function() {
       assert(api.isDone(), "the API was hit with /set/jquery");
-      assert(spy.calledWith("https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js", "foo.js"), "getFile was called with the expected arguments");
+      assert(spy.calledWith("https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js", "foo.js"), "processFileGet was called with the expected arguments");
       done();
     });
   });
@@ -81,7 +81,7 @@ describe("Downloading with custom file name", function() {
 
 describe("Searching for a set", function() {
 
-  it("calls getFile for each of the files", function(done) {
+  it("calls processFileGet for each of the files", function(done) {
     var apiSet = mockAndReturn("backbone", [ "backbone.js", "underscore", "jquery" ]);
     var apiBackbone = mockAndReturn("backbone.js", [ "//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js" ]);
     var apiUnderscore = mockAndReturn("underscore", [ "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js" ]);
@@ -89,10 +89,10 @@ describe("Searching for a set", function() {
 
     new Pulldown().init(["backbone"], function() {
       assert(apiSet.isDone(), "the API was hit");
-      assert(spy.calledThrice, "getFile was called 3 times");
-      assert(spy.calledWith("https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"), "getFile was called for Backbone");
-      assert(spy.calledWith("https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"), "getFile was called for Underscore");
-      assert(spy.calledWith("https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"), "getFile was called for jQuery");
+      assert(spy.calledThrice, "processFileGet was called 3 times");
+      assert(spy.calledWith("https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"), "processFileGet was called for Backbone");
+      assert(spy.calledWith("https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"), "processFileGet was called for Underscore");
+      assert(spy.calledWith("https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"), "processFileGet was called for jQuery");
       done();
     });
   });
@@ -112,7 +112,7 @@ describe("Downloading from local JSON", function() {
 
   it("searches that before searching the web", function(done) {
     new Pulldown().init(["jquery"], function() {
-      assert(spy.calledWith("http://foo.com/madeup.js"), "getFile was called with the local URL");
+      assert(spy.calledWith("http://foo.com/madeup.js"), "processFileGet was called with the local URL");
       done();
     });
   });
@@ -121,14 +121,14 @@ describe("Downloading from local JSON", function() {
 describe("Downloading from URL", function() {
   it("can accept a URL to download", function(done) {
     new Pulldown().init(["http://foo.com/madeup.js"], function() {
-      assert(spy.calledWith("http://foo.com/madeup.js"), "getFile was called with the URL passed to Pulldown");
+      assert(spy.calledWith("http://foo.com/madeup.js"), "processFileGet was called with the URL passed to Pulldown");
       done();
     });
   });
 
   it("can accept a URL to download and a custom name", function(done) {
     new Pulldown().init(["http://foo.com/madeup.js::test.js"], function() {
-      assert(spy.calledWith("http://foo.com/madeup.js", "test.js"), "getFile was called with the URL passed to Pulldown");
+      assert(spy.calledWith("http://foo.com/madeup.js", "test.js"), "processFileGet was called with the URL passed to Pulldown");
       done();
     });
   });
