@@ -179,23 +179,28 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
     process.stdout.write("\n");
     self.log("Success: " + url + " was downloaded to " + fileDestination, "green");
     // If it's a zip, extract to a folder with the same name, minus the zip
-    if (!isAZip) return doneGetFile(null, {
-      url: url,
-      fileDestination: fileDestination
-    });
-
-    // It's a ZIIIIP!!! http://s.phuu.net/1bjjyox
-    // Unzip all up in this
-    fs.createReadStream(fileDestination)
-      .pipe(unzip.Extract({ path: outPath }))
-      .on('close', function () {
-        self.log("Success: " + fileDestination + " was extracted to " + outPath, "green");
-        doneGetFile(null, {
-          url: url,
-          fileDestination: outPath,
-          unzipped: true
-        });
+    if (!isAZip) {
+      return doneGetFile(null, {
+        url: url,
+        fileDestination: fileDestination
       });
+    } else {
+      self.extractZip(fileDestination, outPath, doneGetFile);
+    }
+  });
+};
+
+Pulldown.prototype.extractZip = function(file, out, doneGetFile) {
+  var self = this;
+  fs.createReadStream(file)
+  .pipe(unzip.Extract({ path: out }))
+  .on('close', function () {
+    self.log("Success: " + file + " was extracted to " + out, "green");
+    doneGetFile(null, {
+      url: url,
+      fileDestination: out,
+      unzipped: true
+    });
   });
 };
 
