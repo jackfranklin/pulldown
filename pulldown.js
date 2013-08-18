@@ -15,6 +15,7 @@ var _              = require("underscore");
 var chalk          = require("chalk");
 var updateNotifier = require('update-notifier');
 var parseArgs      = require('./lib/parseargs');
+var optimist       = require('optimist');
 
 
 var isUrl = function(str) {
@@ -28,7 +29,9 @@ var Pulldown = function() {
 Pulldown.prototype.init = function(userArgs, done) {
   done = done || function () {};
   var stripBools = parseArgs(userArgs);
-  userArgs = stripBools.parsedArgs;
+  var optimistParsed = optimist.parse(stripBools.parsedArgs);
+  userArgs = optimistParsed._;
+  this.outputDir = optimistParsed.o || optimistParsed.output;
   var bools = stripBools.bools;
   if (!userArgs.length || bools.h || bools.help) return this.help();
 
@@ -59,7 +62,6 @@ Pulldown.prototype.ls = function(done) {
 
 Pulldown.prototype.processDownload = function(userArgs, bools, done) {
   this.isDryRun = bools.d || bools["dry-run"];
-  this.outputDir = bools.o || bools.output;
 
   if(this.isDryRun) {
     this.log("Dry Run - no files will be downloaded", "underline");
@@ -157,7 +159,7 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
   var fileDestination = path.join(this.outputDir || ".", out + (isAZip && needsZip ? '.zip' : ''));
 
   // calculate outpath for zip
-  var outPath = out.replace(/\.zip$/i, '');
+  var outPath = self.zipOutPath(out);
 
   if(this.isDryRun) {
     this.log(url + " would have been downloaded to " + fileDestination, "green");
@@ -179,23 +181,32 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
     process.stdout.write("\n");
     self.log("Success: " + url + " was downloaded to " + fileDestination, "green");
     // If it's a zip, extract to a folder with the same name, minus the zip
-    if (!isAZip) return doneGetFile(null, {
-      url: url,
-      fileDestination: fileDestination
-    });
-
-    // It's a ZIIIIP!!! http://s.phuu.net/1bjjyox
-    // Unzip all up in this
-    fs.createReadStream(fileDestination)
-      .pipe(unzip.Extract({ path: outPath }))
-      .on('close', function () {
-        self.log("Success: " + fileDestination + " was extracted to " + outPath, "green");
-        doneGetFile(null, {
-          url: url,
-          fileDestination: outPath,
-          unzipped: true
-        });
+    if (!isAZip) {
+      return doneGetFile(null, {
+        url: url,
+        fileDestination: fileDestination
       });
+    } else {
+      self.extractZip(url, fileDestination, outPath, doneGetFile);
+    }
+  });
+};
+
+Pulldown.prototype.zipOutPath = function(out) {
+  return path.join(this.outputDir || ".", out.replace(/\.zip$/i, ''));
+};
+
+Pulldown.prototype.extractZip = function(url, file, out, doneGetFile) {
+  var self = this;
+  fs.createReadStream(file)
+  .pipe(unzip.Extract({ path: out }))
+  .on('close', function () {
+    self.log("Success: " + file + " was extracted to " + out, "green");
+    doneGetFile(null, {
+      url: url,
+      fileDestination: out,
+      unzipped: true
+    });
   });
 };
 

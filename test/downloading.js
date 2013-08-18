@@ -1,10 +1,9 @@
-var assert = require("assert");
+var assert   = require("assert");
 var Pulldown = require("../pulldown");
-var nock = require("nock");
-var sinon = require("sinon");
+var nock     = require("nock");
+var sinon    = require("sinon");
 var spy, log;
 var oldGetFile = Pulldown.prototype.getFile;
-
 
 var setup = function() {
   spy = sinon.spy();
@@ -195,6 +194,22 @@ describe("dry run", function() {
     var api = mockAndReturn("jquery", [ url ]);
     new Pulldown().init(["--dry-run", "jquery"], function() {
       assert(log.indexOf("foo.zip would have been extracted to foo") > -1, "it logs the zip extraction destination");
+      done();
+    });
+  });
+});
+
+describe("the -o flag", function() {
+  beforeEach(function() {
+    restoreGetFile();
+    stubLogs();
+  });
+  it("lets you specify an output dir", function(done) {
+    var url = "//some/jquery.js";
+    var api = mockAndReturn("jquery", [ url ]);
+    new Pulldown().init(["jquery", "-o", "foo", "-d"], function() {
+      var expected = "https://some/jquery.js would have been downloaded to foo/jquery.js";
+      assert(log.indexOf(expected) > -1, "it logs out the output dir");
       done();
     });
   });
