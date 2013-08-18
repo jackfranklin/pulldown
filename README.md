@@ -139,6 +139,16 @@ $ pulldown jquery@1.7.1
 
 Pulldown searches [cdnjs](http://cdnjs.com/) for it. If it can't find the right version, it'll give you the latest.
 
+## Dry Run
+
+If you want to see what would happen when you run a particular command, append the `-d` or `--dry-run` flag. This will not download the files, but will tell you what would happen:
+
+```
+$ pulldown jquery -d
+-> Dry Run - no files will be downloaded
+-> https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js would have been downloaded to jquery.min.js
+```
+
 ## Upgrading
 
 ```

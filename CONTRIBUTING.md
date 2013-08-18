@@ -17,8 +17,9 @@ Most of the things in our [issue list](https://github.com/jackfranklin/pulldown/
 You should fork the repository, and then run:
 
 ```
+$ npm install -g grunt-cli
 $ npm install --dev
-npm link
+$ npm link
 ```
 
 The second command will ensure the version of `pulldown` used if you run it is linked to the repository, so you can try any new changes out as you go.
@@ -38,6 +39,16 @@ mocha
 ```
 
 Please make sure you write tests for your new feature.
+
+### Grunt
+
+We use Grunt to run JSHint and the Mocha tests automatically. Please ensure before you make a pull request that:
+
+```
+$ grunt
+```
+
+Runs successfully with no warnings or errors.
 
 ### Style Guide
 
