@@ -151,10 +151,12 @@ See the CONTRIBUTING.md file.
 
 ## Changelog
 
-__V1.0.0rc1 (unreleased)__
-- you can now run a dry-run to see what will happen with the flag `-d` or `--dry-run`: `$ pulldown -d jquery`
-- if you use 1 semi colon instead of 2 to split URL and output (eg `jquery:foo.js`), which is incorrect, you'll see a nice error message instead of a JS exception.
-- you can run `$ pulldown ls` to list the sets we support.
+__V1.0.0rc1__
+- you can now run a dry-run to see what will happen with the flag `-d` or `--dry-run`: `$ pulldown -d jquery` (Number #40)
+- if you use 1 semi colon instead of 2 to split URL and output (eg `jquery:foo.js`), which is incorrect, you'll see a nice error message instead of a JS exception. (Number #33)
+- you can run `$ pulldown ls` to list the sets we support. (Number #38)
+- bug fixed: when downloading zips, the `-o` flag was ignored. (Number #41)
+- bug fixed: you can now specify complex paths to download a file to: `$ pulldown jquery::foo/bar/baz/jquery.js` (Number #42)
 
 __V0.6.0__
 - you can now programatically require Pulldown: `var Pulldown = require("pulldown")` (presuming it's in your package.json and installed as a dependency).
