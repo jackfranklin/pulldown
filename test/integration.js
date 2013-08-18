@@ -51,4 +51,11 @@ describe("Downloading a file", function() {
       done();
     });
   });
+
+  it("supports complex paths", function(done) {
+    new Pulldown().init(["jquery::foo/bah/test.js"], function() {
+      assertFileExists("foo/bah/test.js");
+      done();
+    });
+  });
 });
