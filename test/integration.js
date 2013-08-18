@@ -24,6 +24,7 @@ var setup = function() {
 };
 
 var assertFileExists = function(name) {
+  console.log("PWD", shell.pwd());
   assert(fs.existsSync(name), "File " + name + " exists");
 };
 
