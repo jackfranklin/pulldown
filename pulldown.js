@@ -24,6 +24,20 @@ var Pulldown = function() {
   this.files = [];
 };
 
+Pulldown.prototype.init = function(userArgs, done) {
+  done = done || function () {};
+  var stripBools = stripBooleansFromArgs(userArgs);
+  userArgs = stripBools.parsedArgs;
+  var bools = stripBools.bools;
+  if (!userArgs.length || bools.h || bools.help) return this.help();
+
+  if(userArgs[0] == "ls") {
+    this.ls(done);
+  } else {
+    this.processDownload(userArgs, bools, done);
+  }
+};
+
 Pulldown.prototype.log = function(message, colour) {
   var prefix = "->";
   var message = (colour ? chalk[colour](message) : message);
@@ -83,21 +97,6 @@ var stripBooleansFromArgs = function(userArgs) {
   };
 };
 
-
-
-Pulldown.prototype.init = function(userArgs, done) {
-  done = done || function () {};
-  var stripBools = stripBooleansFromArgs(userArgs);
-  userArgs = stripBools.parsedArgs;
-  var bools = stripBools.bools;
-  if (!userArgs.length || bools.h || bools.help) return this.help();
-
-  if(userArgs[0] == "ls") {
-    this.ls(done);
-  } else {
-    this.processDownload(userArgs, bools, done);
-  }
-};
 
 Pulldown.prototype.help = require("./lib/help");
 
