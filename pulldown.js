@@ -43,8 +43,15 @@ Pulldown.prototype.ls = function(done) {
   }.bind(this));
 };
 
-Pulldown.prototype.processDownload = function(userArgs, inputArgs, done) {
-  this.outputDir = inputArgs.o || inputArgs.output;
+Pulldown.prototype.processDownload = function(userArgs, bools, done) {
+  this.isDryRun = bools.d || bools["dry-run"];
+  this.outputDir = bools.o || bools.output;
+
+  if(this.isDryRun) {
+    this.log("Dry Run - no files will be downloaded", "underline");
+  }
+
+
   if(this.outputDir) {
     // we're going to be writing here, so we should make sure it exists
     shell.mkdir('-p', this.outputDir);
@@ -56,16 +63,40 @@ Pulldown.prototype.processDownload = function(userArgs, inputArgs, done) {
   }.bind(this));
 };
 
+var stripBooleansFromArgs = function(userArgs) {
+  // optimist doesn't seem to handle booleans well
+  // so we can detect them here and strip them out
+  var expectedBools = ["-d", "--dry-run", "-o", "--output", "-h", "--help"];
+  var foundBools = {};
+
+  expectedBools.forEach(function(item) {
+    var index;
+    if((index = userArgs.indexOf(item)) > -1) {
+      item = item.replace(/^-{1,2}/, "");
+      foundBools[item] = true;
+      userArgs.splice(index, 1);
+    }
+  });
+
+  return {
+    parsedArgs: userArgs,
+    bools: foundBools
+  };
+};
+
+
+
 Pulldown.prototype.init = function(userArgs, done) {
   done = done || function () {};
-  var inputArgs = optimist.parse(userArgs);
-  if (!userArgs.length || inputArgs.h || inputArgs.help) return this.help();
-  var userArgs = inputArgs._;
+  var stripBools = stripBooleansFromArgs(userArgs);
+  userArgs = stripBools.parsedArgs;
+  var bools = stripBools.bools;
+  if (!userArgs.length || bools.h || bools.help) return this.help();
 
   if(userArgs[0] == "ls") {
     this.ls(done);
   } else {
-    this.processDownload(userArgs, inputArgs, done);
+    this.processDownload(userArgs, bools, done);
   }
 };
 
@@ -173,6 +204,18 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
   // Build a desitination
   // Include the .zip if needed
   var fileDestination = path.join(this.outputDir || ".", out + (isAZip && needsZip ? '.zip' : ''));
+
+  // calculate outpath for zip
+  var outPath = out.replace(/\.zip$/i, '');
+
+  if(this.isDryRun) {
+    this.log(url + " would have been downloaded to " + fileDestination, "green");
+    if(isAZip) {
+      this.log(fileDestination + " would have been extracted to " + outPath, "green");
+    }
+    return doneGetFile(null);
+  }
+
   var stream = request(url);
   stream.pipe(fs.createWriteStream(fileDestination));
 
@@ -189,8 +232,8 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
       url: url,
       fileDestination: fileDestination
     });
+
     // It's a ZIIIIP!!! http://s.phuu.net/1bjjyox
-    var outPath = out.replace(/\.zip$/i, '');
     // Unzip all up in this
     fs.createReadStream(fileDestination)
       .pipe(unzip.Extract({ path: outPath }))
