@@ -33,6 +33,8 @@
     "mocha": "~1.10.0",
     "sinon": "~1.7.2",
     "rimraf": "~2.2.0",
-    "nock": "~0.22.1"
+    "nock": "~0.22.1",
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.6.3"
   }
 }
