@@ -23,7 +23,7 @@
     "shelljs": "0.0.6",
     "unzip": "~0.1.7",
     "pulldown-resolve": "0.0.7",
-    "pulldown-middle-man": "0.0.1",
+    "pulldown-middle-man": "0.1.0",
     "optimist": "~0.4.0",
     "async": "~0.2.8",
     "underscore": "~1.4.4",
