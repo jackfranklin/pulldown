@@ -8,6 +8,7 @@ var oldGetFile = Pulldown.prototype.processFileGet;
 var oldExtractZip = Pulldown.prototype.extractZip;
 
 var stubGetFileForZip = function() {
+  nock.cleanAll();
   spy = sinon.spy();
   Pulldown.prototype.processFileGet = function(url, out, cb) {
     out = out || URL.parse(url).pathname.split("/").pop();

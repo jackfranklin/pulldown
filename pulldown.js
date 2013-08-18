@@ -180,10 +180,15 @@ Pulldown.prototype.download = function(url, fileDestination, zipOutPath, doneGet
   var total = 0;
   stream.on("data", function(chunk) {
     total += chunk.length;
-    process.stdout.write("\r" + "Downloaded " + total + " bytes.");
+
+    if(require.main === module) {
+      process.stdout.write("\r" + "Downloaded " + total + " bytes.");
+    }
   });
   stream.on("end", function() {
-    process.stdout.write("\n");
+    if(require.main === module) {
+      process.stdout.write("\n");
+    }
     self.log("Success: " + url + " was downloaded to " + fileDestination, "green");
     // If it's a zip, extract to a folder with the same name, minus the zip
     if (!isAZip) {
