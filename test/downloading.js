@@ -130,3 +130,33 @@ describe("Depreciation warning", function() {
     });
   });
 });
+
+describe("Listing sets", function() {
+  beforeEach(setup);
+
+  it("lists all the sets but not the single mappings", function(done) {
+    var api = nock("http://pulldown-api.herokuapp.com")
+         .get("/")
+         .reply(200, {
+           "backbone": [
+             "backbone.js",
+             "underscore",
+             "jquery"
+           ],
+           "marionette": [
+             "backbone",
+             "backbone.marionette"
+           ],
+           "bootstrap": "foo"
+         });
+    new Pulldown().init(["ls"], function() {
+      var logged = "backbone: backbone.js, underscore, jquery";
+      var notLogged = "bootstrap: foo";
+      assert(log.indexOf(logged) > -1, "it logs out the sets");
+      assert(log.indexOf(notLogged) == -1, "it does not log out the non set");
+      assert(api.isDone(), "The API index is hit");
+      done();
+    });
+  });
+
+});

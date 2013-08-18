@@ -31,11 +31,19 @@ Pulldown.prototype.log = function(message, colour) {
   console.log(prefix, message);
 };
 
-Pulldown.prototype.init = function(userArgs, done) {
-  done = done || function () {};
-  var inputArgs = optimist.parse(userArgs);
-  if (!userArgs.length || inputArgs.h || inputArgs.help) return this.help();
-  this.userArgs = inputArgs._;
+Pulldown.prototype.ls = function(done) {
+  middleMan.index(function(data) {
+    for(var key in data) {
+      if(Array.isArray(data[key])) {
+        var items = data[key].join(", ");
+        this.log(key + ": " + items);
+      }
+    }
+    done();
+  }.bind(this));
+};
+
+Pulldown.prototype.processDownload = function(userArgs, inputArgs, done) {
   this.outputDir = inputArgs.o || inputArgs.output;
   if(this.outputDir) {
     // we're going to be writing here, so we should make sure it exists
@@ -43,9 +51,22 @@ Pulldown.prototype.init = function(userArgs, done) {
   }
 
   this.localJson = this.getLocalJson();
-  this.processUserArgs(function(urls) {
+  this.processUserArgs(userArgs, function(urls) {
     this.downloadFiles(urls, done);
   }.bind(this));
+};
+
+Pulldown.prototype.init = function(userArgs, done) {
+  done = done || function () {};
+  var inputArgs = optimist.parse(userArgs);
+  if (!userArgs.length || inputArgs.h || inputArgs.help) return this.help();
+  var userArgs = inputArgs._;
+
+  if(userArgs[0] == "ls") {
+    this.ls(done);
+  } else {
+    this.processDownload(userArgs, inputArgs, done);
+  }
 };
 
 Pulldown.prototype.help = function () {
@@ -77,8 +98,8 @@ Pulldown.prototype.getLocalJson = function() {
   return file;
 };
 
-Pulldown.prototype.processUserArgs = function(callback) {
-  async.map(this.userArgs, function(item, done) {
+Pulldown.prototype.processUserArgs = function(userArgs, callback) {
+  async.map(userArgs, function(item, done) {
     this.parsePackageArgument(item, function(data) {
       done(null, data);
     }.bind(this));
