@@ -142,6 +142,30 @@ Pulldown.prototype.downloadFiles = function(urls, downloadDone) {
   }.bind(this), downloadDone);
 };
 
+Pulldown.prototype.download = function(url, fileDestination, zipOutPath, doneGetFile) {
+  var stream = request(url);
+  stream.pipe(fs.createWriteStream(fileDestination));
+
+  var total = 0;
+  stream.on("data", function(chunk) {
+    total += chunk.length;
+    process.stdout.write("\r" + "Downloaded " + total + " bytes.");
+  });
+  stream.on("end", function() {
+    process.stdout.write("\n");
+    self.log("Success: " + url + " was downloaded to " + fileDestination, "green");
+    // If it's a zip, extract to a folder with the same name, minus the zip
+    if (!isAZip) {
+      return doneGetFile(null, {
+        url: url,
+        fileDestination: fileDestination
+      });
+    } else {
+      self.extractZip(url, fileDestination, zipOutPath, doneGetFile);
+    }
+  });
+};
+
 // TODO error handle this
 Pulldown.prototype.getFile = function(url, out, doneGetFile) {
   var self = this;
@@ -167,29 +191,9 @@ Pulldown.prototype.getFile = function(url, out, doneGetFile) {
       this.log(fileDestination + " would have been extracted to " + outPath, "green");
     }
     return doneGetFile(null);
+  } else {
+    self.download(url, fileDestination, outPath, doneGetFile);
   }
-
-  var stream = request(url);
-  stream.pipe(fs.createWriteStream(fileDestination));
-
-  var total = 0;
-  stream.on("data", function(chunk) {
-    total += chunk.length;
-    process.stdout.write("\r" + "Downloaded " + total + " bytes.");
-  });
-  stream.on("end", function() {
-    process.stdout.write("\n");
-    self.log("Success: " + url + " was downloaded to " + fileDestination, "green");
-    // If it's a zip, extract to a folder with the same name, minus the zip
-    if (!isAZip) {
-      return doneGetFile(null, {
-        url: url,
-        fileDestination: fileDestination
-      });
-    } else {
-      self.extractZip(url, fileDestination, outPath, doneGetFile);
-    }
-  });
 };
 
 Pulldown.prototype.zipOutPath = function(out) {

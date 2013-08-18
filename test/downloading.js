@@ -30,7 +30,6 @@ var restoreGetFile = function() {
   Pulldown.prototype.getFile = oldGetFile;
 };
 
-
 var mockAndReturn = function(searchTerm, result) {
   return nock("http://pulldown-api.herokuapp.com/")
          .get("/set/" + searchTerm)
@@ -41,7 +40,6 @@ beforeEach(setup);
 afterEach(after);
 
 describe("Searching for a library", function() {
-
   it("searches the api for it", function(done) {
     var api = mockAndReturn("jquery", [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
     var pulldown = new Pulldown();
@@ -69,6 +67,13 @@ describe("Downloading with custom file name", function() {
     new Pulldown().init(["jquery::foo.js"], function() {
       assert(api.isDone(), "the API was hit with /set/jquery");
       assert(spy.calledWith("https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js", "foo.js"), "getFile was called with the expected arguments");
+      done();
+    });
+  });
+
+  it("supports more complex paths", function(done) {
+    var api = mockAndReturn("jquery", [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
+    new Pulldown().init(["jquery::bar/foo.js"], function() {
       done();
     });
   });
