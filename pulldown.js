@@ -36,16 +36,29 @@ Pulldown.prototype.init = function(userArgs, done) {
   var inputArgs = optimist.parse(userArgs);
   if (!userArgs.length || inputArgs.h || inputArgs.help) return this.help();
   this.userArgs = inputArgs._;
-  this.outputDir = inputArgs.o || inputArgs.output;
-  if(this.outputDir) {
-    // we're going to be writing here, so we should make sure it exists
-    shell.mkdir('-p', this.outputDir);
-  }
 
-  this.localJson = this.getLocalJson();
-  this.processUserArgs(function(urls) {
-    this.downloadFiles(urls, done);
-  }.bind(this));
+  if(this.userArgs[0] == "ls") {
+    middleMan.index(function(data) {
+      for(var key in data) {
+        if(Array.isArray(data[key])) {
+          var items = data[key].join(", ");
+          this.log(key + ": " + items);
+        }
+      }
+      done();
+    }.bind(this));
+  } else {
+    this.outputDir = inputArgs.o || inputArgs.output;
+    if(this.outputDir) {
+      // we're going to be writing here, so we should make sure it exists
+      shell.mkdir('-p', this.outputDir);
+    }
+
+    this.localJson = this.getLocalJson();
+    this.processUserArgs(function(urls) {
+      this.downloadFiles(urls, done);
+    }.bind(this));
+  }
 };
 
 Pulldown.prototype.help = function () {
