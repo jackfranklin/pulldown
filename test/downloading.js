@@ -6,6 +6,7 @@ var spy, log;
 var oldGetFile = Pulldown.prototype.processFileGet;
 
 var setup = function() {
+  nock.cleanAll();
   spy = sinon.spy();
   Pulldown.prototype.processFileGet = function(url, out, doneGetFile) {
     spy.apply(this, Array.prototype.slice.call(arguments));
