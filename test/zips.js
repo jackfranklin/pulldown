@@ -4,12 +4,12 @@ var nock     = require("nock");
 var sinon    = require("sinon");
 var URL      = require('url');
 var spy, log;
-var oldGetFile = Pulldown.prototype.getFile;
+var oldGetFile = Pulldown.prototype.processFileGet;
 var oldExtractZip = Pulldown.prototype.extractZip;
 
 var stubGetFileForZip = function() {
   spy = sinon.spy();
-  Pulldown.prototype.getFile = function(url, out, cb) {
+  Pulldown.prototype.processFileGet = function(url, out, cb) {
     out = out || URL.parse(url).pathname.split("/").pop();
     var outPath = this.zipOutPath(out);
     this.extractZip(url, out, outPath, cb);
