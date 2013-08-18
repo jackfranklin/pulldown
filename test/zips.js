@@ -6,6 +6,7 @@ var URL      = require('url');
 var spy, log;
 var oldGetFile = Pulldown.prototype.processFileGet;
 var oldExtractZip = Pulldown.prototype.extractZip;
+var oldLog = Pulldown.prototype.log;
 
 var stubGetFileForZip = function() {
   nock.cleanAll();
@@ -29,6 +30,12 @@ var stubLogs = function() {
   };
 };
 
+var restoreFns = function() {
+  Pulldown.prototype.log = oldLog;
+  Pulldown.prototype.processFileGet = oldGetFile;
+  Pulldown.prototype.extractZip = oldExtractZip;
+};
+
 var mockAndReturn = function(searchTerm, result) {
   return nock("http://pulldown-api.herokuapp.com/")
          .get("/set/" + searchTerm)
@@ -38,6 +45,7 @@ var mockAndReturn = function(searchTerm, result) {
 
 describe("Downloading and extracting a zip", function() {
   beforeEach(stubGetFileForZip);
+  after(restoreFns);
   it("extracts it to the CWD", function(done) {
     var api = mockAndReturn("jquery", [ "//cdn//foo.zip" ]);
     new Pulldown().init(["jquery"], function() {

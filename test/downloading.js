@@ -4,6 +4,7 @@ var nock     = require("nock");
 var sinon    = require("sinon");
 var spy, log;
 var oldGetFile = Pulldown.prototype.processFileGet;
+var oldLog = Pulldown.prototype.log;
 
 var setup = function() {
   nock.cleanAll();
@@ -17,6 +18,7 @@ var setup = function() {
 
 var after = function() {
   restoreGetFile();
+  restoreLog();
   nock.cleanAll();
 };
 
@@ -29,6 +31,9 @@ var stubLogs = function() {
 
 var restoreGetFile = function() {
   Pulldown.prototype.processFileGet = oldGetFile;
+};
+var restoreLog = function() {
+  Pulldown.prototype.log = oldLog;
 };
 
 var mockAndReturn = function(searchTerm, result) {

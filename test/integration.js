@@ -21,10 +21,11 @@ var setup = function() {
     .persist()
     .get("/set/jquery")
     .reply(200, [ "http://madeup.com/foo.js" ]);
+
+  Pulldown.prototype.log = function() {};
 };
 
 var assertFileExists = function(name) {
-  console.log("PWD", shell.pwd());
   assert(fs.existsSync(name), "File " + name + " exists");
 };
 
