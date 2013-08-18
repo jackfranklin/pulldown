@@ -72,8 +72,20 @@ describe("Downloading with custom file name", function() {
   });
 
   it("supports more complex paths", function(done) {
+    restoreGetFile();
     var api = mockAndReturn("jquery", [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
+    var downloadSpy = sinon.spy();
+    var oldDownload = Pulldown.prototype.download;
+    Pulldown.prototype.download = function(url, dest, zip, cb) {
+      downloadSpy.apply(this, Array.prototype.slice.call(arguments));
+      return cb(null);
+    };
     new Pulldown().init(["jquery::bar/foo.js"], function() {
+      assert(downloadSpy.calledWith(
+        "https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js",
+        "bar/foo.js"
+      ), "download is called with right arguments");
+      Pulldown.prototype.download = oldDownload;
       done();
     });
   });

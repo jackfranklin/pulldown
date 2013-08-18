@@ -165,11 +165,13 @@ Pulldown.prototype.processFileGet = function(url, out, doneGetFile) {
     }
     return doneGetFile(null);
   } else {
-    self.download(url, fileDestination, outPath, doneGetFile);
+    self.download(url, fileDestination, isAZip ? outPath : undefined, doneGetFile);
   }
 };
 
 Pulldown.prototype.download = function(url, fileDestination, zipOutPath, doneGetFile) {
+  var self = this;
+  var isAZip = !!zipOutPath;
   var stream = request(url);
   stream.pipe(fs.createWriteStream(fileDestination));
 
