@@ -27,7 +27,8 @@
     "async": "~0.2.8",
     "underscore": "~1.4.4",
     "chalk": "~0.2.0",
-    "update-notifier": "~0.1.5"
+    "update-notifier": "~0.1.5",
+    "optimist": "~0.6.0"
   },
   "devDependencies": {
     "mocha": "~1.10.0",
