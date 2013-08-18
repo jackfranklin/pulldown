@@ -142,6 +142,33 @@ Pulldown.prototype.downloadFiles = function(urls, downloadDone) {
   }.bind(this), downloadDone);
 };
 
+Pulldown.prototype.processFileGet = function(url, out, doneGetFile) {
+  var self = this;
+  try {
+    out = out || URL.parse(url).pathname.split("/").pop();
+  } catch(e) {
+    self.log("Error: you have to use two colons (::) to specify file name, not just one.", "red");
+    return doneGetFile(e);
+  }
+
+  var isAZip = !!url.match(/\.zip$/i),
+      needsZip = !out.match(/\.zip$/i);
+
+  var fileDestination = path.join(this.outputDir || ".", out + (isAZip && needsZip ? '.zip' : ''));
+
+  var outPath = self.zipOutPath(out);
+
+  if(this.isDryRun) {
+    this.log(url + " would have been downloaded to " + fileDestination, "green");
+    if(isAZip) {
+      this.log(fileDestination + " would have been extracted to " + outPath, "green");
+    }
+    return doneGetFile(null);
+  } else {
+    self.download(url, fileDestination, outPath, doneGetFile);
+  }
+};
+
 Pulldown.prototype.download = function(url, fileDestination, zipOutPath, doneGetFile) {
   var stream = request(url);
   stream.pipe(fs.createWriteStream(fileDestination));
@@ -166,35 +193,6 @@ Pulldown.prototype.download = function(url, fileDestination, zipOutPath, doneGet
   });
 };
 
-// TODO error handle this
-Pulldown.prototype.processFileGet = function(url, out, doneGetFile) {
-  var self = this;
-
-  try {
-    out = out || URL.parse(url).pathname.split("/").pop();
-  } catch(e) {
-    self.log("Error: you have to use two colons (::) to specify file name, not just one.", "red");
-    return doneGetFile(e);
-  }
-  var isAZip = !!url.match(/\.zip$/i),
-      needsZip = !out.match(/\.zip$/i);
-  // Build a desitination
-  // Include the .zip if needed
-  var fileDestination = path.join(this.outputDir || ".", out + (isAZip && needsZip ? '.zip' : ''));
-
-  // calculate outpath for zip
-  var outPath = self.zipOutPath(out);
-
-  if(this.isDryRun) {
-    this.log(url + " would have been downloaded to " + fileDestination, "green");
-    if(isAZip) {
-      this.log(fileDestination + " would have been extracted to " + outPath, "green");
-    }
-    return doneGetFile(null);
-  } else {
-    self.download(url, fileDestination, outPath, doneGetFile);
-  }
-};
 
 Pulldown.prototype.zipOutPath = function(out) {
   return path.join(this.outputDir || ".", out.replace(/\.zip$/i, ''));
