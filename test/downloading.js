@@ -5,6 +5,7 @@ var sinon = require("sinon");
 var spy, log;
 var oldGetFile = Pulldown.prototype.getFile;
 
+
 var setup = function() {
   spy = sinon.spy();
   Pulldown.prototype.getFile = function(url, out, doneGetFile) {
@@ -37,10 +38,10 @@ var mockAndReturn = function(searchTerm, result) {
          .reply(200, result);
 };
 
+beforeEach(setup);
+afterEach(after);
 
 describe("Searching for a library", function() {
-  beforeEach(setup);
-  afterEach(after);
 
   it("searches the api for it", function(done) {
     var api = mockAndReturn("jquery", [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
@@ -64,8 +65,6 @@ describe("Searching for a library", function() {
 });
 
 describe("Downloading with custom file name", function() {
-  beforeEach(setup);
-  afterEach(after);
   it("lets the user specify the filename", function(done) {
     var api = mockAndReturn("jquery", [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
     new Pulldown().init(["jquery::foo.js"], function() {
@@ -77,8 +76,6 @@ describe("Downloading with custom file name", function() {
 });
 
 describe("Searching for a set", function() {
-  beforeEach(setup);
-  afterEach(after);
 
   it("calls getFile for each of the files", function(done) {
     var apiSet = mockAndReturn("backbone", [ "backbone.js", "underscore", "jquery" ]);
@@ -100,7 +97,6 @@ describe("Searching for a set", function() {
 describe("Downloading from local JSON", function() {
   var oldGetJson;
   beforeEach(function() {
-    setup();
     oldGetJson = Pulldown.prototype.getLocalJson;
     Pulldown.prototype.getLocalJson = function() {
       return { "jquery": "http://foo.com/madeup.js" };
@@ -119,8 +115,6 @@ describe("Downloading from local JSON", function() {
 });
 
 describe("Downloading from URL", function() {
-  beforeEach(setup);
-  afterEach(after);
   it("can accept a URL to download", function(done) {
     new Pulldown().init(["http://foo.com/madeup.js"], function() {
       assert(spy.calledWith("http://foo.com/madeup.js"), "getFile was called with the URL passed to Pulldown");
@@ -150,8 +144,6 @@ describe("Depreciation warning", function() {
 });
 
 describe("Listing sets", function() {
-  beforeEach(setup);
-  afterEach(after);
 
   it("lists all the sets but not the single mappings", function(done) {
     var api = nock("http://pulldown-api.herokuapp.com")
