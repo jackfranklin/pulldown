@@ -41,7 +41,7 @@ Pulldown.prototype.init = function(userArgs, done) {
 
 Pulldown.prototype.log = function(message, colour) {
   var prefix = "->";
-  var message = (colour ? chalk[colour](message) : message);
+  message = (colour ? chalk[colour](message) : message);
   console.log(prefix, message);
 };
 
@@ -92,7 +92,7 @@ Pulldown.prototype.processUserArgs = function(userArgs, callback) {
     // easiest way to do this is to stringify them and compare strings
     // filter out dups, and then JSON.parse back to objects
     var jsonResults = results.map(function(item) { return JSON.stringify(item); });
-    results = _.uniq(jsonResults).map(function(item) { return JSON.parse(item) });
+    results = _.uniq(jsonResults).map(function(item) { return JSON.parse(item); });
 
     callback(results);
   });

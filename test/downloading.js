@@ -23,19 +23,19 @@ var stubLogs = function() {
   log = [];
   Pulldown.prototype.log = function(message, colour) {
     log.push(message);
-  }
+  };
 };
 
 var restoreGetFile = function() {
   Pulldown.prototype.getFile = oldGetFile;
-}
+};
 
 
 var mockAndReturn = function(searchTerm, result) {
   return nock("http://pulldown-api.herokuapp.com/")
          .get("/set/" + searchTerm)
          .reply(200, result);
-}
+};
 
 
 describe("Searching for a library", function() {
