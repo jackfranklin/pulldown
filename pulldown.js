@@ -9,7 +9,6 @@ var pkg            = require('./package.json');
 var resolve        = require("pulldown-resolve");
 var middleMan      = require("pulldown-middle-man");
 var path           = require("path");
-var optimist       = require("optimist");
 var async          = require("async");
 var unzip          = require("unzip");
 var _              = require("underscore");
