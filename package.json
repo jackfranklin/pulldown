@@ -4,7 +4,7 @@
   "description": "Fetch popular web libraries from the net",
   "preferGlobal": "true",
   "bin": {
-    "pulldown": "pulldown.js"
+    "pulldown": "bin/cli.js"
   },
   "main": "pulldown.js",
   "scripts": {
