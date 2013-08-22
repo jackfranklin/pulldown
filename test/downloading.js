@@ -1,18 +1,7 @@
 var assert   = require("assert");
 var Pulldown = require("../pulldown");
 var nock     = require("nock");
-
-var mockAndReturn = function(searchTerm, result) {
-  return nock("http://pulldown-api.herokuapp.com/")
-         .get("/set/" + searchTerm)
-         .reply(200, result);
-};
-
-var mockCdn = function(url) {
-  nock("https://cdnjs.cloudflare.com/")
-    .get(url)
-    .reply(200, "Hello World");
-};
+var helpers = require("./helpers");
 
 before(function() {
   nock("https://cdnjs.cloudflare.com/")
@@ -41,7 +30,7 @@ describe("downloading", function() {
   });
 
   it("returns false if it can't find a library", function(done) {
-    mockAndReturn("foobar", []);
+    helpers.mockAndReturn("foobar", []);
     new Pulldown().init(["foobar"], function(err, results) {
       assert.equal(results[0].found, false);
       done();
@@ -50,7 +39,7 @@ describe("downloading", function() {
 
   it("can download a URL", function(done) {
     var url = "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js";
-    mockCdn("/ajax/libs/underscore.js/1.5.1/underscore-min.js");
+    helpers.mockCdn("/ajax/libs/underscore.js/1.5.1/underscore-min.js");
     new Pulldown().init([url], function(err, results) {
       assert.equal(results[0].url, url);
       done();
@@ -59,11 +48,11 @@ describe("downloading", function() {
 
   describe("downloading a set", function() {
     before(function() {
-      mockAndReturn("backbone", ["backbone.js", "underscore", "jquery"]);
-      mockAndReturn("backbone.js", [ "//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js" ]);
-      mockAndReturn("underscore", [ "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js" ]);
-      mockCdn("/ajax/libs/underscore.js/1.5.1/underscore-min.js");
-      mockCdn("/ajax/libs/backbone.js/1.0.0/backbone-min.js");
+      helpers.mockAndReturn("backbone", ["backbone.js", "underscore", "jquery"]);
+      helpers.mockAndReturn("backbone.js", [ "//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js" ]);
+      helpers.mockAndReturn("underscore", [ "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js" ]);
+      helpers.mockCdn("/ajax/libs/underscore.js/1.5.1/underscore-min.js");
+      helpers.mockCdn("/ajax/libs/backbone.js/1.0.0/backbone-min.js");
     });
     it("returns all the files in the set", function(done) {
       new Pulldown().init(["backbone"], function(err, results) {
