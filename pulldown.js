@@ -78,8 +78,11 @@ Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
     });
     var resp = [];
     set.forEach(function(url) {
-      resp.push({ searchTerm: searchTerm, url: url });
+      resp.push({ searchTerm: searchTerm, found: true, url: url });
     });
+    if(!set.length) {
+      resp.push({ searchTerm: searchTerm, found: false });
+    };
     callback(resp);
   });
 };
@@ -91,6 +94,10 @@ Pulldown.prototype.downloadFiles = function(urls, downloadDone) {
 };
 
 Pulldown.prototype.download = function(library, doneGetFile) {
+  if(!library.found) {
+    return doneGetFile(null, library);
+  };
+
   var url = library.url;
   request(url, function(err, resp, body) {
     if(err) return doneGetFile(err);
