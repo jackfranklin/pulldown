@@ -6,6 +6,7 @@ var updateNotifier = require('update-notifier');
 var _              = require("underscore");
 var async          = require("async");
 var Pulldown       = require("../pulldown");
+var pkg            = require("../package.json");
 var argv           = require("optimist").boolean(["d", "dry-run"]).argv;
 
 var pulldown = new Pulldown();
@@ -27,6 +28,9 @@ CLI.prototype = {
   parseArgs: function(args) {
     if(args.h || args.help) return pulldown.help();
     var libraryArgs = args._;
+    if (args.v || args.version) {
+      return console.log(pkg.version);
+    }
     if(libraryArgs[0] == "ls") {
       return pulldown.ls(function(data) {
         data.forEach(log);
