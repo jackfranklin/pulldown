@@ -57,4 +57,11 @@ describe("downloading a single library", function() {
       done();
     });
   });
+
+  it("wont download the file with the -d flag", function(done) {
+    cli.run({ _:["jquery"], d: true }, function() {
+      assert(!fs.existsSync("jquery.js"));
+      done();
+    });
+  });
 });
