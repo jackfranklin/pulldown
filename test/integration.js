@@ -1,62 +1,59 @@
-var assert   = require("assert");
-var Pulldown = require("../pulldown");
-var nock     = require("nock");
-var fs       = require("fs");
-var shell    = require("shelljs");
+var CLI = require("../bin/cli");
+var fs = require("fs");
+var shell = require("shelljs");
+var assert = require("assert");
+var helpers = require("./helpers");
 
-var mockAndReturn = function(searchTerm, result) {
-  return nock("http://pulldown-api.herokuapp.com/")
-         .get("/set/" + searchTerm)
-         .reply(200, result);
-};
+var cli;
 
-var setup = function() {
-  nock("http://madeup.com")
-    .persist()
-    .get("/foo.js")
-    .reply(200, fs.readFileSync("test/fixtures/foo.js"));
+CLI.prototype.log = function() {};
 
+beforeEach(function() {
+  cli = new CLI();
+  if(shell.test("-d", "test/tmp")) {
+    shell.rm("-r", "test/tmp");
+  }
+  shell.mkdir("test/tmp");
+  shell.cd("test/tmp");
+});
 
-  nock("http://pulldown-api.herokuapp.com/")
-    .persist()
-    .get("/set/jquery")
-    .reply(200, [ "http://madeup.com/foo.js" ]);
+afterEach(function() {
+  shell.cd("../../");
+});
 
-  Pulldown.prototype.log = function() {};
-};
-
-var assertFileExists = function(name) {
-  assert(fs.existsSync(name), "File " + name + " exists");
-};
-
-
-
-
-describe("Downloading a file", function() {
-  beforeEach(function() {
-    setup();
-    shell.cd("test/tmp");
-  });
-  afterEach(function() {
-    shell.cd("../..");
-  });
-  it("downloads the file", function(done) {
-    new Pulldown().init(["jquery"], function() {
-      assertFileExists("foo.js");
+describe("downloading a single library", function() {
+  it("downloads jquery", function(done) {
+    cli.run({ _: ["jquery"] }, function() {
+      helpers.assertFileExists("jquery.js");
       done();
     });
   });
 
-  it("can download to a custom name", function(done) {
-    new Pulldown().init(["jquery::test.js"], function() {
-      assertFileExists("test.js");
+  it("can take a custom filename", function(done) {
+    cli.run({ _:["jquery::foo.js"] }, function() {
+      helpers.assertFileExists("foo.js");
       done();
     });
   });
 
-  it("supports complex paths", function(done) {
-    new Pulldown().init(["jquery::foo/bah/test.js"], function() {
-      assertFileExists("foo/bah/test.js");
+  it("can take a custom path", function(done) {
+    cli.run({ _:["jquery::bar/foo.js"] }, function() {
+      assert(shell.test("-d", "bar"), "It makes bar the directory");
+      helpers.assertFileExists("bar/foo.js");
+      done();
+    });
+  });
+
+  it("can take the -o flag", function(done) {
+    cli.run({ _:["jquery"], o: "foo" }, function() {
+      helpers.assertFileExists("foo/jquery.js");
+      done();
+    });
+  });
+
+  it("can combine the custom path and --output", function(done) {
+    cli.run({ _:["jquery::foo.js"], output: "bar" }, function() {
+      helpers.assertFileExists("bar/foo.js");
       done();
     });
   });

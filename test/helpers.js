@@ -1,4 +1,6 @@
-var nock = require("nock");
+var nock   = require("nock");
+var fs     = require("fs");
+var assert = require("assert");
 
 var mockAndReturn = function(searchTerm, result) {
   return nock("http://pulldown-api.herokuapp.com/")
@@ -12,5 +14,26 @@ var mockCdn = function(url) {
         .reply(200, "Hello World");
 };
 
+var assertFileExists = function(name) {
+  assert(fs.existsSync(name), "File " + name + " exists");
+};
+
 exports.mockCdn = mockCdn;
 exports.mockAndReturn = mockAndReturn;
+exports.assertFileExists = assertFileExists;
+
+before(function() {
+  nock("https://cdnjs.cloudflare.com/")
+    .persist()
+    .get("/ajax/libs/jquery/2.0.3/jquery.min.js")
+    .reply(200, "Hello World");
+
+  nock("http://pulldown-api.herokuapp.com/")
+    .persist()
+    .get("/set/jquery")
+    .reply(200, [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
+});
+
+after(function() {
+  nock.cleanAll();
+});

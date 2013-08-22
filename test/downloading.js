@@ -1,24 +1,7 @@
 var assert   = require("assert");
 var Pulldown = require("../pulldown");
 var nock     = require("nock");
-var helpers = require("./helpers");
-
-before(function() {
-  nock("https://cdnjs.cloudflare.com/")
-    .persist()
-    .get("/ajax/libs/jquery/2.0.3/jquery.min.js")
-    .reply(200, "Hello World");
-
-  nock("http://pulldown-api.herokuapp.com/")
-    .persist()
-    .get("/set/jquery")
-    .reply(200, [ "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" ]);
-});
-
-after(function() {
-  nock.cleanAll();
-});
-
+var helpers  = require("./helpers");
 
 describe("downloading", function() {
   it("searches the api for it", function(done) {

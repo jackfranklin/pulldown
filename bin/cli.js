@@ -1,16 +1,24 @@
 #!/usr/bin/env node
-var optimist       = require("optimist");
 var chalk          = require("chalk");
 var shell          = require("shelljs");
 var fs             = require("fs");
 var updateNotifier = require('update-notifier');
 var _              = require("underscore");
+var async              = require("async");
 var Pulldown       = require("../pulldown");
 var argv           = require("optimist").argv;
 
 var pulldown = new Pulldown();
 
-var cli = {
+var CLI = function() {
+  this.output, this.dryRun;
+  this.searchTerms = [];
+  this.destinations = {};
+  this.checkForUpdate();
+};
+
+
+CLI.prototype = {
   log: function(message, colour) {
     var prefix = "->";
     message = (colour ? chalk[colour](message) : message);
@@ -18,7 +26,7 @@ var cli = {
   },
   parseArgs: function(args) {
     if(args.h || args.help) return pulldown.help();
-    var libraryArgs = argv._;
+    var libraryArgs = args._;
     if(libraryArgs[0] == "ls") {
       return pulldown.ls(function(data) {
         data.forEach(log);
@@ -44,49 +52,58 @@ var cli = {
       this.destinations[searchTerm] = split[1] || this.ensureEndsInJs(searchTerm);
     }.bind(this));
   },
-  destinations: {},
-  // to pass to pulldown
-  searchTerms: [],
   ensureEndsInJs: function(str) {
     var isJs = !!str.match(/\.js$/i);
     return ( isJs ? str : str + ".js" );
-  }
-};
+  },
+  run: function(optimistArgs, cliComplete) {
+    cliComplete = cliComplete || function() {};
+    this.parseArgs(optimistArgs);
+    pulldown.init(this.searchTerms, function(err, results) {
+      if(err) console.log(err);
+      if(this.output && !this.dryRun) shell.mkdir("-p", this.output);
 
-var notifier = updateNotifier({
-  packagePath: "../package.json"
-});
-
-if(notifier.update) {
-  notifier.notify();
-};
-
-cli.parseArgs(argv);
-
-pulldown.init(cli.searchTerms, function(err, results) {
-  if(err) console.log(err);
-  if(cli.output && !cli.dryRun) shell.mkdir("-p", cli.output);
-
-  results.forEach(function(res) {
-    var outputDir = cli.output || ".";
-    var destination = cli.destinations[res.searchTerm];
-    if(!cli.dryRun) {
+      async.map(results, function(res, done) {
+        this.parseSingleResult(res, done);
+      }.bind(this), cliComplete);
+    }.bind(this));
+  },
+  parseSingleResult: function(res, done) {
+    var outputDir = this.output || ".";
+    var destination = this.destinations[res.searchTerm];
+    if(!this.dryRun) {
       var destinationParts = destination.split("/");
       if(destinationParts.length > 1) {
         var folders = _.initial(destinationParts).join("/");
         shell.mkdir("-p", outputDir + "/" + folders);
       };
     };
-
     var output = outputDir + "/" + destination;
-
-    if(cli.dryRun) {
-      cli.log(res.searchTerm + " would be downloaded to " + output);
+    if(this.dryRun) {
+      this.log(res.url + " would be downloaded to " + output);
+      return done();
     } else {
       fs.writeFile(output, res.contents, function(err) {
         if(err) return console.log(err);
-        cli.log(res.searchTerm + " downloaded to " + output, "green");
-      });
+        this.log(res.url + " downloaded to " + output, "green");
+        return done();
+      }.bind(this));
     }
-  });
-});
+  },
+  checkForUpdate: function() {
+    var notifier = updateNotifier({
+      packagePath: "../package.json"
+    });
+
+    if(notifier.update) {
+      notifier.notify();
+    };
+  }
+};
+
+module.exports = CLI;
+
+if(require.main == module) {
+  var cli = new CLI().run(argv);
+}
+
