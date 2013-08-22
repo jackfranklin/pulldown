@@ -23,7 +23,7 @@ afterEach(function() {
 
 describe("downloading a single library", function() {
   it("downloads jquery", function(done) {
-    cli.run({ _: ["jquery"] }, function() {
+    cli.run({ _:["jquery"] }, function() {
       helpers.assertFileExists("jquery.js");
       done();
     });
