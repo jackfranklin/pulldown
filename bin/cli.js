@@ -63,14 +63,30 @@ CLI.prototype = {
   run: function(optimistArgs, cliComplete) {
     cliComplete = cliComplete || function() {};
     this.parseArgs(optimistArgs);
+    this.startTicker();
     pulldown.init(this.searchTerms, function(err, results) {
       if(err) console.log(err);
+      this.stopTicker();
       if(this.output && !this.dryRun) shell.mkdir("-p", this.output);
 
       async.map(results, function(res, done) {
         this.parseSingleResult(res, done);
       }.bind(this), cliComplete);
     }.bind(this));
+  },
+  startTicker: function () {
+    var ticks = 0;
+    this.tickerTimer = setInterval(function () {
+      ticks += 1;
+      var color = 'green';
+      if (ticks > 3) color = 'yellow';
+      if (ticks > 6) color = 'red';
+     if (this.tickerTimer) process.stdout.write(chalk[color]('.'));
+    }.bind(this), 1000);
+  },
+  stopTicker: function () {
+    process.stdout.write('\r');
+    clearInterval(this.tickerTimer);
   },
   parseSingleResult: function(res, done) {
     var outputDir = this.output || ".";
