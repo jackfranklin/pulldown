@@ -4,7 +4,7 @@ var shell          = require("shelljs");
 var fs             = require("fs");
 var updateNotifier = require('update-notifier');
 var _              = require("underscore");
-var async              = require("async");
+var async          = require("async");
 var Pulldown       = require("../pulldown");
 var argv           = require("optimist").boolean(["d", "dry-run"]).argv;
 
