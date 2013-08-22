@@ -1,7 +1,7 @@
-var CLI = require("../bin/cli");
-var fs = require("fs");
-var shell = require("shelljs");
-var assert = require("assert");
+var CLI     = require("../bin/cli");
+var fs      = require("fs");
+var shell   = require("shelljs");
+var assert  = require("assert");
 var helpers = require("./helpers");
 
 var cli;
