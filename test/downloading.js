@@ -48,6 +48,15 @@ describe("downloading", function() {
     });
   });
 
+  it("can download a URL", function(done) {
+    var url = "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js";
+    mockCdn("/ajax/libs/underscore.js/1.5.1/underscore-min.js");
+    new Pulldown().init([url], function(err, results) {
+      assert.equal(results[0].url, url);
+      done();
+    });
+  });
+
   describe("downloading a set", function() {
     before(function() {
       mockAndReturn("backbone", ["backbone.js", "underscore", "jquery"]);
