@@ -26,8 +26,8 @@ CLI.prototype = {
     console.log(prefix, message);
   },
   parseArgs: function(args) {
-    if(args.h || args.help) return pulldown.help();
     var libraryArgs = args._;
+    if(args.h || args.help || !libraryArgs.length) return pulldown.help();
     if (args.v || args.version) {
       return console.log(pkg.version);
     }
