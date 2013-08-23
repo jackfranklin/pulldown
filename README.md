@@ -159,6 +159,35 @@ $ npm update pulldown -g
 
 See the CONTRIBUTING.md file.
 
+## Pulldown vs Bower
+We get a lot of questions about the similarities and differences of Pulldown compared to Bower.
+
+Short Answer: Bower is a package manager; Pulldown downloads files. Bower configurations can be saved with a project and shared by people working on it; Pulldown cannot – it is almost configuration-less. Think of it as way to get a copy of your favourite library, fast.
+
+Long Answer: Bower is a far more complex and fully-featured package and, more importantly, dependency manager. If you have a complex project with multiple 3rd party libraries in play, and you want to keep tight control over the versions you're using, Bower is best suited. Use Bower when you wouldn't want to commit all those libraries to Git, but would want to commit a component.json file.
+
+We envisage (and personally use) Pulldown for those times when you just want one or two libraries, and have little care for versioning or dependencies. For example, if I want to prototype a quick Backbone app, I can quickly run $ pulldown jquery underscore backbone.js to get all three. Here it doesn't matter to me which versions I have (Pulldown will always pull in the latest stable version by default) and I'll probably commit those libraries to Git too. Pulldown also has the concept of sets, which is often where people get confused. These two commands are equal:
+
+```
+$ pulldown jquery underscore backbone.js
+$ pulldown backbone
+```
+
+The second command will download the Backbone set, which will give you Underscore, jQuery and Backbone. This looks like dependency management - and sort of is - but it's really dumb. All Pulldown is doing here is seeing you asked it for "backbone", and replacing that with "jquery underscore backbone.js", which it then goes and gets separately. Sets are hard coded in the [Pulldown API](https://github.com/phuu/pulldown-api/blob/master/pulldown.json#L4):
+
+```
+"backbone": ["backbone.js", "underscore", "jquery"],
+```
+
+The sets are there purely to allow you to save time and type less. There is no versioning, dependency checks or anything done with sets. They are just a list of libraries to download, nothing more.
+
+Remember:
+
+- Pulldown: run once, commit libraries to source control.
+- Bower: add package to configuration file, don't commit libraries to source control, run often.
+
+If you've any further questions, please do ask.
+
 ## Changelog
 
 __V1.0.0rc1__
