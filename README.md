@@ -196,6 +196,10 @@ If you've any further questions, please do ask.
 
 ## Changelog
 
+__V1.0.0__
+- complete rewrite to separate Pulldown the module and Pulldown the CLI tool. The module is now responsible for searching the API and returning the contents of the library source. The CLI tool saves those to files and parses the command line arguments.
+- Various small bug fixes and tweaks.
+
 __V1.0.0rc1__
 - you can now run a dry-run to see what will happen with the flag `-d` or `--dry-run`: `$ pulldown -d jquery` (Number #40)
 - if you use 1 semi colon instead of 2 to split URL and output (eg `jquery:foo.js`), which is incorrect, you'll see a nice error message instead of a JS exception. (Number #33)
