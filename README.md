@@ -196,6 +196,9 @@ If you've any further questions, please do ask.
 
 ## Changelog
 
+__V1.0.2__
+- add `found: true` flag to the results returned from the `pulldown.init` callback. This enables you to see if a searchTerm was successful by seeing if `result.found === true`.
+
 __V1.0.1__
 - Fixed `TypeError` when you search for something that no longer exists ( Number #70 )
 - Improve handling of errors and the console output.
