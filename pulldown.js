@@ -101,7 +101,7 @@ Pulldown.prototype.download = function(library, doneGetFile) {
   var url = library.url;
   request(url, function(err, resp, body) {
     if(err) return doneGetFile(err);
-    return doneGetFile(null, { searchTerm: library.searchTerm, url: url, contents: body });
+    return doneGetFile(null, { searchTerm: library.searchTerm, url: url, contents: body, found: true });
   });
 };
 
