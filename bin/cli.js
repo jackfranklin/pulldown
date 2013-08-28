@@ -5,6 +5,7 @@ var fs             = require("fs");
 var updateNotifier = require('update-notifier');
 var _              = require("underscore");
 var async          = require("async");
+var URL            = require("url");
 var Pulldown       = require("../pulldown");
 var pkg            = require("../package.json");
 var argv           = require("optimist").boolean(["d", "dry-run"]).argv;
@@ -48,17 +49,24 @@ CLI.prototype = {
       this.dryRun = args.d || args["dry-run"];
     };
   },
+  isUrl: function(str) {
+    return !!URL.parse(str).hostname;
+  },
   parseLibraryArgs: function(libraryArgs) {
     libraryArgs.forEach(function(arg) {
       var split = arg.split("::");
       var searchTerm = split[0];
       this.searchTerms.push(searchTerm);
-      this.destinations[searchTerm] = split[1] || this.ensureEndsInJs(searchTerm);
+      if(this.isUrl(searchTerm)) {
+        this.destinations[searchTerm] = _.last(searchTerm.split("/"));
+      } else {
+        this.destinations[searchTerm] = split[1] || this.ensureHasPrefix(searchTerm);
+      }
     }.bind(this));
   },
-  ensureEndsInJs: function(str) {
-    var isJs = !!str.match(/\.js$/i);
-    return ( isJs ? str : str + ".js" );
+  ensureHasPrefix: function(str) {
+    var hasPrefix = !!str.match(/\.[a-z]{2-6}$/i);
+    return ( hasPrefix ? str : str + ".js" );
   },
   run: function(optimistArgs, cliComplete) {
     cliComplete = cliComplete || function() {};
