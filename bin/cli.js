@@ -29,7 +29,7 @@ CLI.prototype = {
   parseArgs: function(args) {
     var libraryArgs = args._;
     if(args.h || args.help || !libraryArgs.length) return pulldown.help();
-    if (args.v || args.version) {
+    if(args.v || args.version) {
       return console.log(pkg.version);
     }
     if(libraryArgs[0] == "ls") {
@@ -60,12 +60,14 @@ CLI.prototype = {
       if(this.isUrl(searchTerm)) {
         this.destinations[searchTerm] = _.last(searchTerm.split("/"));
       } else {
-        this.destinations[searchTerm] = split[1] || this.ensureHasPrefix(searchTerm);
+        // if there is no specific output defined
+        // we will get it from parsing out the URL
+        this.destinations[searchTerm] = split[1] || undefined;
       }
     }.bind(this));
   },
   ensureHasPrefix: function(str) {
-    var hasPrefix = !!str.match(/\.[a-z]{2-6}$/i);
+    var hasPrefix = !!str.match(/\.([a-z]{2,6})$/i);
     return ( hasPrefix ? str : str + ".js" );
   },
   run: function(optimistArgs, cliComplete) {
@@ -98,7 +100,7 @@ CLI.prototype = {
   },
   parseSingleResult: function(res, done) {
     var outputDir = this.output || ".";
-    var destination = this.destinations[res.searchTerm];
+    var destination = this.destinations[res.searchTerm] || this.ensureHasPrefix(_.last(res.url.split("/")));
     if(!this.dryRun) {
       var destinationParts = destination.split("/");
       if(destinationParts.length > 1) {
