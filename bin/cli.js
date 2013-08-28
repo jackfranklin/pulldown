@@ -66,8 +66,8 @@ CLI.prototype = {
       }
     }.bind(this));
   },
-  ensureHasPrefix: function(str) {
-    var hasPrefix = !!str.match(/\.([a-z]{2,6})$/i);
+  ensureHasFileExtension: function(str) {
+    var hasPrefix = !!str.match(/\.([a-z]{1,6})$/i);
     return ( hasPrefix ? str : str + ".js" );
   },
   run: function(optimistArgs, cliComplete) {
@@ -100,7 +100,7 @@ CLI.prototype = {
   },
   parseSingleResult: function(res, done) {
     var outputDir = this.output || ".";
-    var destination = this.destinations[res.searchTerm] || this.ensureHasPrefix(_.last(res.url.split("/")));
+    var destination = this.destinations[res.searchTerm] || this.ensureHasFileExtension(_.last(res.url.split("/")));
     if(!this.dryRun) {
       var destinationParts = destination.split("/");
       if(destinationParts.length > 1) {
