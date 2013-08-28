@@ -196,6 +196,10 @@ If you've any further questions, please do ask.
 
 ## Changelog
 
+__V1.0.1__
+- Fixed `TypeError` when you search for something that no longer exists ( Number #70 )
+- Improve handling of errors and the console output.
+
 __V1.0.0__
 - complete rewrite to separate Pulldown the module and Pulldown the CLI tool. The module is now responsible for searching the API and returning the contents of the library source. The CLI tool saves those to files and parses the command line arguments.
 - Various small bug fixes and tweaks.
