@@ -101,6 +101,10 @@ CLI.prototype = {
     clearInterval(this.tickerTimer);
   },
   parseSingleResult: function(res, done) {
+    if(res.found == false) {
+      this.log("Failure: nothing found for '" + res.searchTerm + "'", "red");
+      return;
+    }
     var outputDir = this.output || ".";
     var destination = this.destinations[res.searchTerm] || this.ensureHasFileExtension(_.last(res.url.split("/")));
     if(!this.dryRun) {
