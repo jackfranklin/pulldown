@@ -115,7 +115,7 @@ CLI.prototype = {
     } else {
       fs.writeFile(output, res.contents, function(err) {
         if(err) return console.log(err);
-        this.log(res.url + " downloaded to " + output, "green");
+        this.log("Success: " + res.url + " was downloaded to " + output, "green");
         return done();
       }.bind(this));
     }
