@@ -34,8 +34,10 @@ CLI.prototype = {
     }
     if(libraryArgs[0] == "ls") {
       return pulldown.ls(function(data) {
-        data.forEach(log);
-      });
+        data.forEach(function(item) {
+          this.log(item);
+        }.bind(this));
+      }.bind(this));
     };
     this.parseLibraryArgs(libraryArgs);
     this.findFlags(args);
