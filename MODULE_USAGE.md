@@ -28,8 +28,17 @@ Search for something.
 pulldown.init(["jquery"], function(err, results) {
     if(err) console.log(err);
     console.log(results);
-    // => [ { searchTerm: 'jquery', url: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js', contents: 'jquery source' } ]
 });
+```
+
+`results` will be an array of objects. For the above, it will look like so:
+
+```
+[{
+    searchTerm: 'jquery',
+    url: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js',
+    contents: 'jquery source'
+}]
 ```
 
 The `results` variable will be an array of each result, in the same order that the search terms were passed in. For example:
@@ -37,8 +46,32 @@ The `results` variable will be an array of each result, in the same order that t
 ```js
 pulldown.init(["jquery", "underscore"], function(err, results) {
     console.log(results);
-    // => [ { searchTerm: 'jquery', url: 'foo.com', contents: '...'  }, { searchTerm: 'underscore', url: 'bar.com', contents: '...' } ]
 });
+```
+
+`results`:
+
+```
+[
+    {
+        searchTerm: 'jquery',
+        url: 'foo.com',
+        contents: '...'
+    },
+    {
+        searchTerm: 'underscore',
+        url: 'bar.com',
+        contents: '...'
+    }
+]
+```
+
+The order will always match the order the search terms were passed in.
+
+Pulldown can also accept a URL:
+
+```js
+pulldown.init(["http://foo.com/some/lib.js"], function(err, results) {});
 ```
 
 
