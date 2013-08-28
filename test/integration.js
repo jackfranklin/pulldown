@@ -24,7 +24,7 @@ afterEach(function() {
 describe("downloading a single library", function() {
   it("downloads jquery", function(done) {
     cli.run({ _:["jquery"] }, function() {
-      helpers.assertFileExists("jquery.js");
+      helpers.assertFileExists("jquery.min.js");
       done();
     });
   });
@@ -46,7 +46,7 @@ describe("downloading a single library", function() {
 
   it("can take the -o flag", function(done) {
     cli.run({ _:["jquery"], o: "foo" }, function() {
-      helpers.assertFileExists("foo/jquery.js");
+      helpers.assertFileExists("foo/jquery.min.js");
       done();
     });
   });
