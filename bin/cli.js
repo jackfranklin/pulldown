@@ -80,6 +80,7 @@ CLI.prototype = {
       this.stopTicker();
       if(err) {
         this.log("Error: " + err.message, "red");
+        this.log("Did you only use one colon instead of two to separate the search term and file name?");
         return;
       }
       if(this.output && !this.dryRun) shell.mkdir("-p", this.output);
