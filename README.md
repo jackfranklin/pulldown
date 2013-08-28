@@ -8,7 +8,9 @@ Built with &hearts; by [@jackfranklin](https://github.com/jackfranklin) and [@ph
 
 Supports Node 0.10.x and 0.8.x.
 
-## Install
+The following documentation is for using Pulldown as a CLI tool. If you'd like documentation on the use of Pulldown as a module, please see MODULE_USAGE.md.
+
+## Installation
 
 Install pulldown globally using npm:
 
@@ -40,11 +42,15 @@ $ pulldown
 
 ## Downloading Libraries
 
-Once that's done, downloading jQuery is as simple as:
-
 ```
 $ pulldown jquery
 ->  Success: https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js was downloaded to jquery.min.js
+```
+
+```
+$ pulldown jquery underscore
+->  Success: https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js was downloaded to jquery.min.js
+->  Success: https://cdnjs.cloudflare.com/ajax/libs/underscore/1.0.0/underscore.min.js was downloaded to underscore.min.js
 ```
 
 Pulldown works by searching on the [cdnjs](http://cdnjs.com/) site for what you asked it for.
