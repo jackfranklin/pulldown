@@ -47,11 +47,8 @@ The `results` variable will be an array of each result, in the same order that t
 pulldown.init(["jquery", "underscore"], function(err, results) {
     console.log(results);
 });
-```
 
-`results`:
-
-```js
+// results:
 [
     {
         searchTerm: 'jquery',
@@ -72,6 +69,37 @@ Pulldown can also accept a URL:
 
 ```js
 pulldown.init(["http://foo.com/some/lib.js"], function(err, results) {});
+
+// results:
+[{
+    searchTerm: 'http://foo.com/some/lib.js',
+    url: 'http://foo.com/some/lib.js',
+    contents: 'contents of lib.js'
+}]
 ```
 
+Or it can accept a set, as defined on the [Pulldown API](https://github.com/phuu/pulldown-api/blob/master/pulldown.json).
 
+```js
+pulldown.init(["backbone"], function(err, results) {
+});
+
+// results:
+[
+    {
+        searchTerm: 'jquery',
+        url: 'foo.com',
+        contents: '...'
+    },
+    {
+        searchTerm: 'underscore',
+        url: 'bar.com',
+        contents: '...'
+    },
+    {
+        searchTerm: 'backbone.js',
+        url: 'baz.com',
+        contents: '...'
+    }
+]
+```
