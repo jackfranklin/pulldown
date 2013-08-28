@@ -33,7 +33,7 @@ pulldown.init(["jquery"], function(err, results) {
 
 `results` will be an array of objects. For the above, it will look like so:
 
-```
+```js
 [{
     searchTerm: 'jquery',
     url: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js',
@@ -51,7 +51,7 @@ pulldown.init(["jquery", "underscore"], function(err, results) {
 
 `results`:
 
-```
+```js
 [
     {
         searchTerm: 'jquery',
