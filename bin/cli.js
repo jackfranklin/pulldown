@@ -77,8 +77,11 @@ CLI.prototype = {
     this.parseArgs(optimistArgs);
     this.startTicker();
     pulldown.init(this.searchTerms, function(err, results) {
-      if(err) console.log(err);
       this.stopTicker();
+      if(err) {
+        this.log("Error: " + err.message, "red");
+        return;
+      }
       if(this.output && !this.dryRun) shell.mkdir("-p", this.output);
 
       async.map(results, function(res, done) {
