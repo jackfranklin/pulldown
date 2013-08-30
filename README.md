@@ -196,6 +196,9 @@ If you've any further questions, please do ask.
 
 ## Changelog
 
+__V1.0.3__
+- If you downloaded a URL and passed an output name (eg `$ pulldown foo.com/bar.js::test.js`), it will now save the file to the specified name and not just ignore it (bug #74).
+
 __V1.0.2__
 - add `found: true` flag to the results returned from the `pulldown.init` callback. This enables you to see if a searchTerm was successful by seeing if `result.found === true`.
 
