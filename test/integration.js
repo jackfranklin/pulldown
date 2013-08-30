@@ -65,3 +65,21 @@ describe("downloading a single library", function() {
     });
   });
 });
+
+describe("downloading from a URL", function() {
+  var jqueryUrl = "https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js";
+  it("can download from a URL", function(done) {
+    cli.run({_:[jqueryUrl]}, function() {
+      assert(fs.existsSync("jquery.min.js"));
+      done();
+    });
+  });
+
+  it("can take a filename", function(done) {
+    cli.run({_:[jqueryUrl + "::testing.js"]}, function() {
+      assert(fs.existsSync("testing.js"));
+      assert(!fs.existsSync("jquery.min.js"));
+      done();
+    });
+  });
+});

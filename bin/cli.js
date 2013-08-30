@@ -60,7 +60,7 @@ CLI.prototype = {
       var searchTerm = split[0];
       this.searchTerms.push(searchTerm);
       if(this.isUrl(searchTerm)) {
-        this.destinations[searchTerm] = _.last(searchTerm.split("/"));
+        this.destinations[searchTerm] = split[1] || _.last(searchTerm.split("/"));
       } else {
         // if there is no specific output defined
         // we will get it from parsing out the URL
