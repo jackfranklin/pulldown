@@ -28,10 +28,8 @@ CLI.prototype = {
   },
   parseArgs: function(args) {
     var libraryArgs = args._;
+    if(args.v || args.version) return console.log(pkg.version);
     if(args.h || args.help || !libraryArgs.length) return pulldown.help();
-    if(args.v || args.version) {
-      return console.log(pkg.version);
-    }
     if(libraryArgs[0] == "ls") {
       return pulldown.ls(function(data) {
         data.forEach(function(item) {
