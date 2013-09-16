@@ -1,6 +1,6 @@
 # pulldown
 
-Minimalist package manager – quickly grab a copy of your favourite library.
+A way to get your favourite libraries and scripts from the internet, and fast.
 
 Built with &hearts; by [@jackfranklin](https://github.com/jackfranklin) and [@phuu](https://github.com/phuu).
 
