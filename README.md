@@ -196,6 +196,9 @@ If you've any further questions, please do ask.
 
 ## Changelog
 
+__V1.0.4__
+- Fixed a bug that would show the help and not the version number when you ran `$ pulldown -v`.
+
 __V1.0.3__
 - If you downloaded a URL and passed an output name (eg `$ pulldown foo.com/bar.js::test.js`), it will now save the file to the specified name and not just ignore it (bug #74).
 
