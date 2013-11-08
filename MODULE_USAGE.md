@@ -13,13 +13,7 @@ $ npm install pulldown --save
 Load in the Pulldown module.
 
 ```js
-var Pulldown = require("pulldown");
-```
-
-Create a new instance.
-
-```js
-var pulldown = new Pulldown();
+var pulldown = require("pulldown");
 ```
 
 Search for something.
