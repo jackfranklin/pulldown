@@ -6,11 +6,9 @@ var updateNotifier = require('update-notifier');
 var _              = require("underscore");
 var async          = require("async");
 var URL            = require("url");
-var Pulldown       = require("../pulldown");
+var pulldown       = require("../pulldown");
 var pkg            = require("../package.json");
 var argv           = require("optimist").boolean(["d", "dry-run"]).argv;
-
-var pulldown = new Pulldown();
 
 var CLI = function() {
   this.output, this.dryRun;
