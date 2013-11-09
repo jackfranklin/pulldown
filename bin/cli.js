@@ -6,21 +6,13 @@ var updateNotifier = require('update-notifier');
 var _              = require("underscore");
 var async          = require("async");
 var URL            = require("url");
-var Pulldown       = require("../pulldown");
+var pulldown       = require("../pulldown");
 var pkg            = require("../package.json");
 var argv           = require("optimist").boolean(["d", "dry-run"]).argv;
 
-var pulldown = new Pulldown();
-
-var CLI = function() {
-  this.output, this.dryRun;
-  this.searchTerms = [];
-  this.destinations = {};
-  this.checkForUpdate();
-};
-
-
-CLI.prototype = {
+var cli = {
+  searchTerms: [],
+  destinations: {},
   log: function(message, colour) {
     var prefix = "->";
     message = (colour ? chalk[colour](message) : message);
@@ -71,6 +63,11 @@ CLI.prototype = {
     return ( hasPrefix ? str : str + ".js" );
   },
   run: function(optimistArgs, cliComplete) {
+    this.searchTerms = [];
+    this.destinations = [];
+    this.output = undefined;
+    this.dryRun = false;
+    this.checkForUpdate();
     cliComplete = cliComplete || function() {};
     this.parseArgs(optimistArgs);
     this.startTicker();
@@ -139,9 +136,9 @@ CLI.prototype = {
   }
 };
 
-module.exports = CLI;
+module.exports = cli;
 
 if(require.main == module) {
-  var cli = new CLI().run(argv);
+  cli.run(argv);
 }
 

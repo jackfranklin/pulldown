@@ -14,13 +14,16 @@ var mockCdn = function(url) {
         .reply(200, "Hello World");
 };
 
-var assertFileExists = function(name) {
-  assert(fs.existsSync(name), "File " + name + " exists");
-};
-
 exports.mockCdn = mockCdn;
 exports.mockAndReturn = mockAndReturn;
-exports.assertFileExists = assertFileExists;
+
+exports.assertFileExists = function(name) {
+  assert(fs.existsSync(name), "File " + name + " does not exist");
+};
+
+exports.refuteFileExists = function(name) {
+  assert(!fs.existsSync(name), "File " + name + " exists");
+};
 
 before(function() {
   nock("https://cdnjs.cloudflare.com/")

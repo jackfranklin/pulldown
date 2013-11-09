@@ -1,15 +1,12 @@
-var CLI     = require("../bin/cli");
+var cli     = require("../bin/cli");
 var fs      = require("fs");
 var shell   = require("shelljs");
 var assert  = require("assert");
 var helpers = require("./helpers");
 
-var cli;
-
-CLI.prototype.log = function() {};
+cli.log = function() {};
 
 beforeEach(function() {
-  cli = new CLI();
   if(shell.test("-d", "test/tmp")) {
     shell.rm("-r", "test/tmp");
   }
@@ -19,6 +16,11 @@ beforeEach(function() {
 
 afterEach(function() {
   shell.cd("../../");
+  // need to reset the CLI values so they don't carry between tests
+  cli.searchTerms = [];
+  cli.destinations = [];
+  cli.output = undefined;
+  cli.dryRun = false;
 });
 
 describe("downloading a single library", function() {
@@ -60,7 +62,7 @@ describe("downloading a single library", function() {
 
   it("wont download the file with the -d flag", function(done) {
     cli.run({ _:["jquery"], d: true }, function() {
-      assert(!fs.existsSync("jquery.js"));
+      helpers.refuteFileExists("jquery.js");
       done();
     });
   });
@@ -70,15 +72,15 @@ describe("downloading from a URL", function() {
   var jqueryUrl = "https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js";
   it("can download from a URL", function(done) {
     cli.run({_:[jqueryUrl]}, function() {
-      assert(fs.existsSync("jquery.min.js"));
+      helpers.assertFileExists("jquery.min.js");
       done();
     });
   });
 
   it("can take a filename", function(done) {
     cli.run({_:[jqueryUrl + "::testing.js"]}, function() {
-      assert(fs.existsSync("testing.js"));
-      assert(!fs.existsSync("jquery.min.js"));
+      helpers.assertFileExists("testing.js");
+      helpers.refuteFileExists("jquery.min.js");
       done();
     });
   });

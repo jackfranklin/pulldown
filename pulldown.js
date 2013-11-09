@@ -8,16 +8,16 @@ var path      = require("path");
 var async     = require("async");
 var _         = require("underscore");
 
-var Pulldown = function() {
-  this.files = [];
+var pulldown = {
+  files: []
 };
 
-Pulldown.prototype.init = function(userArgs, done) {
+pulldown.init = function(userArgs, done) {
   done = done || function () {};
   this.processDownload(userArgs, done);
 };
 
-Pulldown.prototype.ls = function(done) {
+pulldown.ls = function(done) {
   done = done || function() {};
   middleMan.index(function(data) {
     var resp = [];
@@ -31,18 +31,48 @@ Pulldown.prototype.ls = function(done) {
   }.bind(this));
 };
 
-Pulldown.prototype.processDownload = function(userArgs, done) {
+pulldown.processDownload = function(userArgs, done) {
   this.localJson = this.getLocalJson();
   this.processUserArgs(userArgs, function(urls) {
     this.downloadFiles(urls, done);
   }.bind(this));
 };
 
-Pulldown.prototype.help = require("./lib/help");
+pulldown.help = function() {
+  console.log();
+  console.log('  Usage: pulldown <identifier>[::<file>] [<identifier>[::<file>], ...] [options]');
+  console.log();
+  console.log('  An <identifier> can be a URL, a library name or a set.');
+  console.log();
+  console.log('  Options:');
+  console.log();
+  console.log('    -o, --output  output directory');
+  console.log();
+  console.log('    -d, --dry-run  don\'t actually download the files');
+  console.log();
+  console.log('    -v, --version  get the current pulldown version');
+  console.log();
+  console.log('  Example usage:');
+  console.log();
+  console.log('    pulldown jquery             # Downloads jQuery');
+  console.log('    pulldown jquery::jq.js      # Downloads jQuery to jq.js');
+  console.log('    pulldown jquery angular.js  # Downloads jQuery and Angular.js');
+  console.log('    pulldown backbone           # Downloads jQuery, Underscore.js and Backbone.js');
+  console.log('    pulldown backbone -o js     # Downloads same as above, but into js/');
+  console.log();
+};
 
-Pulldown.prototype.getLocalJson = require("./lib/parsejson");
+pulldown.getLocalJson = function() {
+  var file;
+  var homeDir = process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'];
+  try {
+    file = JSON.parse(fs.readFileSync(path.join(homeDir, ".pulldown.json")).toString());
+  } catch(e) { file = {}; }
 
-Pulldown.prototype.processUserArgs = function(userArgs, callback) {
+  return file;
+};
+
+pulldown.processUserArgs = function(userArgs, callback) {
   async.map(userArgs, function(item, done) {
     this.parsePackageArgument(item, function(data) {
       done(null, data);
@@ -60,7 +90,7 @@ Pulldown.prototype.processUserArgs = function(userArgs, callback) {
   });
 };
 
-Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
+pulldown.parsePackageArgument = function(searchTerm, callback) {
   var self = this;
   resolve(searchTerm, {
     registry: this.localJson,
@@ -87,13 +117,13 @@ Pulldown.prototype.parsePackageArgument = function(searchTerm, callback) {
   });
 };
 
-Pulldown.prototype.downloadFiles = function(urls, downloadDone) {
+pulldown.downloadFiles = function(urls, downloadDone) {
   async.map(urls, function(library, done) {
     this.download(library, done);
   }.bind(this), downloadDone);
 };
 
-Pulldown.prototype.download = function(library, doneGetFile) {
+pulldown.download = function(library, doneGetFile) {
   if(!library.found) {
     return doneGetFile(null, library);
   }
@@ -105,4 +135,4 @@ Pulldown.prototype.download = function(library, doneGetFile) {
   });
 };
 
-module.exports = Pulldown;
+module.exports = pulldown;
