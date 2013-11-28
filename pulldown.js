@@ -1,16 +1,17 @@
 #!/usr/bin/env node
-var fs        = require('fs');
-var request   = require('request');
-var pkg       = require('./package.json');
-var resolve   = require("pulldown-resolve");
-var middleMan = require("pulldown-middle-man");
-var path      = require("path");
-var async     = require("async");
-var _         = require("underscore");
+var fs           = require('fs');
+var EventEmitter = require('events').EventEmitter;
+var request      = require('request');
+var pkg          = require('./package.json');
+var resolve      = require("pulldown-resolve");
+var middleMan    = require("pulldown-middle-man");
+var path         = require("path");
+var async        = require("async");
+var _            = require("underscore");
 
-var pulldown = {
-  files: []
-};
+
+var pulldown = Object.create(new EventEmitter());
+pulldown.files = [];
 
 pulldown.init = function(userArgs, done) {
   done = done || function () {};
@@ -52,6 +53,8 @@ pulldown.help = function() {
   console.log();
   console.log('    -v, --version  get the current pulldown version');
   console.log();
+  console.log('    -n, --noisy  verbose mode, basically');
+  console.log();
   console.log('  Example usage:');
   console.log();
   console.log('    pulldown jquery             # Downloads jQuery');
@@ -90,9 +93,12 @@ pulldown.processUserArgs = function(userArgs, callback) {
   });
 };
 
+pulldown.resolved = pulldown.emit.bind(pulldown, 'resolved');
+resolve.on('resolved', pulldown.resolved);
+
 pulldown.parsePackageArgument = function(searchTerm, callback) {
   var self = this;
-  resolve(searchTerm, {
+  resolve.identifier(searchTerm, {
     registry: this.localJson,
     helper: function(identifier, callback) {
       middleMan.set(identifier, function(data) {
