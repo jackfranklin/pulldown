@@ -10,6 +10,12 @@ var pulldown       = require("../pulldown");
 var pkg            = require("../package.json");
 var argv           = require("optimist").boolean(["d", "dry-run"]).argv;
 
+pulldown.on('resolved', function (identifier, result) {
+  if (!cli.noisy) return;
+  result = (Array.isArray(result) ? result : [result]);
+  cli.log('Resolved ' + identifier + ' to [ ' + result.join(', ') + ' ]');
+});
+
 var cli = {
   searchTerms: [],
   destinations: {},
@@ -35,11 +41,15 @@ var cli = {
   findFlags: function(args) {
     if(args.o || args.output) {
       this.output = args.o || args.output;
-    };
+    }
     if(args.d || args["dry-run"]) {
-      this.log("Dry Run - no files will be downloaded", "underline");
+      this.log("Dry run - no files will be downloaded.", "green");
       this.dryRun = args.d || args["dry-run"];
-    };
+    }
+    if(args.n || args.noisy) {
+      this.log("Noisy!", "red");
+      this.noisy = true;
+    }
   },
   isUrl: function(str) {
     return !!URL.parse(str).hostname;
@@ -70,7 +80,9 @@ var cli = {
     this.checkForUpdate();
     cliComplete = cliComplete || function() {};
     this.parseArgs(optimistArgs);
-    this.startTicker();
+    if (!cli.noisy) {
+      this.startTicker();
+    }
     pulldown.init(this.searchTerms, function(err, results) {
       this.stopTicker();
       if(err) {
@@ -96,12 +108,13 @@ var cli = {
     }.bind(this), 1000);
   },
   stopTicker: function () {
+    if (!this.tickerTimer) return;
     process.stdout.write('\r');
     clearInterval(this.tickerTimer);
   },
   parseSingleResult: function(res, done) {
     if(res.found == false) {
-      this.log("Failure: nothing found for '" + res.searchTerm + "'", "red");
+      this.log("Failure: nothing found for '" + res.searchTerm + "'.", "red");
       return;
     }
     var outputDir = this.output || ".";
