@@ -80,7 +80,9 @@ var cli = {
     this.checkForUpdate();
     cliComplete = cliComplete || function() {};
     this.parseArgs(optimistArgs);
-    this.startTicker();
+    if (!cli.noisy) {
+      this.startTicker();
+    }
     pulldown.init(this.searchTerms, function(err, results) {
       this.stopTicker();
       if(err) {
@@ -106,6 +108,7 @@ var cli = {
     }.bind(this), 1000);
   },
   stopTicker: function () {
+    if (!this.tickerTimer) return;
     process.stdout.write('\r');
     clearInterval(this.tickerTimer);
   },
