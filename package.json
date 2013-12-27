@@ -28,7 +28,8 @@
     "underscore": "~1.4.4",
     "chalk": "~0.2.0",
     "update-notifier": "~0.1.5",
-    "optimist": "~0.6.0"
+    "optimist": "~0.6.0",
+    "tabtab": "0.0.2"
   },
   "devDependencies": {
     "mocha": "~1.10.0",

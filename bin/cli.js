@@ -9,6 +9,8 @@ var URL            = require("url");
 var pulldown       = require("../pulldown");
 var pkg            = require("../package.json");
 var argv           = require("optimist").boolean(["d", "dry-run"]).argv;
+var tabtab         = require('tabtab');
+var request        = require('request');
 
 pulldown.on('resolved', function (identifier, result) {
   if (!cli.noisy) return;
@@ -146,12 +148,22 @@ var cli = {
     if(notifier.update) {
       notifier.notify();
     };
+  },
+  completion: function() {
+    return tabtab.complete('pulldown', function (err, data) {
+      if( err || !data ) { return; }
+
+      return tabtab.log(['marionette', 'underscore', 'backbone', 'html5shiv'], data);
+    });
   }
 };
 
 module.exports = cli;
 
 if(require.main == module) {
+  if(argv._[0] === 'completion') {
+    return cli.completion();
+  }
   cli.run(argv);
 }
 
