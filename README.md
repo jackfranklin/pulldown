@@ -31,6 +31,12 @@ $ pulldown
 
     -o, --output  output directory
 
+    -d, --dry-run  don't actually download the files
+
+    -v, --version  get the current pulldown version
+
+    -n, --noisy  verbose mode, basically
+
   Example usage:
 
     pulldown jquery             # Downloads jQuery
