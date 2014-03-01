@@ -8,7 +8,7 @@ var async          = require("async");
 var URL            = require("url");
 var pulldown       = require("../pulldown");
 var pkg            = require("../package.json");
-var argv           = require("optimist").boolean(["d", "dry-run"]).argv;
+var argv           = require("yargs").boolean(["d", "dry-run"]).argv;
 
 pulldown.on('resolved', function (identifier, result) {
   if (!cli.noisy) return;
