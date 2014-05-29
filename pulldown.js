@@ -110,7 +110,7 @@ pulldown.parsePackageArgument = function(searchTerm, callback) {
     if(!set.length) {
       resp.push({ searchTerm: searchTerm, found: false });
     }
-    callback(resp);
+    callback(null, resp);
   });
 };
 
