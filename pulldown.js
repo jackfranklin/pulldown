@@ -34,7 +34,13 @@ pulldown.ls = function(done) {
 
 pulldown.processDownload = function(userArgs, done) {
   this.localJson = this.getLocalJson();
-  this.processUserArgs(userArgs, function(urls) {
+  this.processUserArgs(userArgs, function(err, urls) {
+    if(err) {
+      return done({
+        statusCode: 503,
+        message: 'Our API returned a 503. It may be offline currently. Please check the Pulldown issue tracker [https://github.com/jackfranklin/pulldown/issues?state=open] and report this if it hasn\'t been already.'
+      });
+    }
     this.downloadFiles(urls, done);
   }.bind(this));
 };
@@ -51,10 +57,14 @@ pulldown.getLocalJson = function() {
 
 pulldown.processUserArgs = function(userArgs, callback) {
   async.map(userArgs, function(item, done) {
-    this.parsePackageArgument(item, function(data) {
-      done(null, data);
+    this.parsePackageArgument(item, function(err, data) {
+      done(err, data);
     }.bind(this));
   }.bind(this), function(err, results) {
+    if(err) {
+      callback(err);
+      return;
+    }
     results = _.flatten(results);
 
     // need to make sure each obj in results is uniq
@@ -63,7 +73,7 @@ pulldown.processUserArgs = function(userArgs, callback) {
     var jsonResults = results.map(function(item) { return JSON.stringify(item); });
     results = _.uniq(jsonResults).map(function(item) { return JSON.parse(item); });
 
-    callback(results);
+    callback(null, results);
   });
 };
 
@@ -75,7 +85,10 @@ pulldown.parsePackageArgument = function(searchTerm, callback) {
   resolve.identifier(searchTerm, {
     registry: this.localJson,
     helper: function(identifier, callback) {
-      middleMan.set(identifier, function(data) {
+      middleMan.set(identifier, function(err, data) {
+        if(err) {
+          return callback(err);
+        }
         data = data.map(function(item) {
           return item[0] === "/" ? "https:" + item : item;
         });
@@ -83,6 +96,10 @@ pulldown.parsePackageArgument = function(searchTerm, callback) {
       });
     }
   }, function(err, set) {
+    if(err) {
+      return callback(err);
+    }
+
     set = set.map(function(item) {
       return item[0] === "/" ? "https:" + item : item;
     });
