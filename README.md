@@ -18,6 +18,12 @@ Install pulldown globally using npm:
 $ npm install -g pulldown
 ```
 
+If you get any errors (particularly if you are on Node 0.8), try updating `npm`:
+
+```
+$ npm install -g npm
+```
+
 This gives you a `pulldown` command to use on your command line:
 
 ```bash
@@ -201,6 +207,9 @@ Remember:
 If you've any further questions, please do ask.
 
 ## Changelog
+
+__V1.1.0__
+- Deal better and show on command line any API errors and problems with Heroku
 
 __V1.0.4__
 - Fixed a bug that would show the help and not the version number when you ran `$ pulldown -v`.
